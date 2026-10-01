@@ -1,0 +1,29 @@
+# Environment variables
+.env
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Streamlit
+.streamlit/secrets.toml
+
+# FAISS local vector indices
+faiss_index/
+*.faiss
+*.pkl
+
+# Upload temporary files
+temp/
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db

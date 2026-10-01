@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= student.name %> — Academic Dossier | Faculty</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "students" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">STUDENT 360° DOSSIER</p>
+          <h1><%= student.name %></h1>
+          <p class="subtitle"><%= student.rollNo %> • <%= student.course %> • Semester <%= student.semester %></p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="/teacher/students" class="secondary-btn">← Back to Roster</a>
+          <button class="primary-btn" onclick="openTeacherEdit('addInterventionModal')">+ Log Intervention</button>
+        </div>
+      </div>
+
+      <!-- Student Executive Bio & Risk Banner -->
+      <div class="panel" style="border-left: 4px solid <%= atRiskInfo.riskLevel === 'HIGH RISK' ? 'var(--danger)' : atRiskInfo.riskLevel === 'MEDIUM RISK' ? 'var(--warning)' : 'var(--primary)' %>;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="avatar large"><%= student.avatar || 'ST' %></div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <h2 style="font-size: 20px; font-weight: 800; color: var(--navy);"><%= student.name %></h2>
+                <span class="badge <%= atRiskInfo.riskLevel === 'HIGH RISK' ? 'urgent' : atRiskInfo.riskLevel === 'MEDIUM RISK' ? 'important' : 'normal' %>">
+                  <%= atRiskInfo.riskLevel %>
+                </span>
+              </div>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                Email: <b><%= student.email %></b> • Phone: <b><%= student.phone %></b>
+              </p>
+              <% if (atRiskInfo.factors.length > 0) { %>
+                <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+                  <% atRiskInfo.factors.forEach(f => { %>
+                    <span class="badge urgent" style="font-size: 10px;">⚠ <%= f %></span>
+                  <% }) %>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 24px;">
+            <div style="text-align: center; border-right: 1px solid var(--border); padding-right: 20px;">
+              <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">CGPA</span>
+              <strong style="font-size: 22px; color: var(--navy); display: block;"><%= Number(student.cgpa).toFixed(2) %></strong>
+            </div>
+            <div style="text-align: center; border-right: 1px solid var(--border); padding-right: 20px;">
+              <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Attendance</span>
+              <strong style="font-size: 22px; color: <%= student.attendance >= 75 ? 'var(--success)' : 'var(--danger)' %>; display: block;"><%= student.attendance %>%</strong>
+            </div>
+            <div style="text-align: center;">
+              <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Health Index</span>
+              <strong style="font-size: 22px; color: var(--primary); display: block;"><%= academicHealth.score %></strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subject Marks & Attendance Chart -->
+      <div class="dashboard-columns two-col-50-50" style="margin-bottom: 24px;">
+        <!-- Subject Marks Radar/Bar Chart -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ASSESSMENT PROFILE</p>
+              <h2>Subject-wise Performance</h2>
+              <p>Continuous internal evaluation marks out of 100</p>
+            </div>
+          </div>
+
+          <div style="height: 240px; position: relative;">
+            <canvas id="studentMarksChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Subject Attendance Comparison Chart -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ATTENDANCE PROFILE</p>
+              <h2>Subject-wise Attendance</h2>
+              <p>Lecture & practical participation percentage</p>
+            </div>
+          </div>
+
+          <div style="height: 240px; position: relative;">
+            <canvas id="studentAttendanceChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subject Performance Table & Intervention History Columns -->
+      <div class="dashboard-columns two-col-50-50">
+        <!-- Detailed Marks Roster -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">COURSEWORK</p>
+              <h2>Subject Performance Table</h2>
+              <p>Course scores and calculated letter grades</p>
+            </div>
+          </div>
+
+          <div class="table-panel">
+            <table>
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Code</th>
+                  <th>Marks</th>
+                  <th>Attendance</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% subjects.forEach(s => { %>
+                  <tr>
+                    <td><strong><%= s.name %></strong></td>
+                    <td><span class="badge primary"><%= s.code %></span></td>
+                    <td><strong><%= s.marks %></strong> / 100</td>
+                    <td>
+                      <strong style="color: <%= s.attendance >= 75 ? 'var(--success)' : 'var(--danger)' %>;">
+                        <%= s.attendance %>%
+                      </strong>
+                    </td>
+                    <td>
+                      <span class="badge <%= s.marks >= 70 ? 'normal' : s.marks >= 50 ? 'important' : 'urgent' %>">
+                        <%= s.marks >= 70 ? 'Proficient' : s.marks >= 50 ? 'Marginal' : 'Deficient' %>
+                      </span>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Mentoring & Intervention History for this Student -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">MENTORING LOG</p>
+              <h2>Faculty Intervention Notes</h2>
+              <p>Chronological records of 1-on-1 counseling</p>
+            </div>
+            <button class="small-btn" onclick="openTeacherEdit('addInterventionModal')">+ Add Note</button>
+          </div>
+
+          <% if (studentInterventions.length === 0) { %>
+            <div style="padding: 24px; text-align: center; color: var(--text-muted); background-color: var(--surface-alt); border-radius: var(--radius-sm); font-size: 12px;">
+              No intervention notes recorded for this student yet. Click "+ Add Note" to log counseling or academic guidance.
+            </div>
+          <% } else { %>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <% studentInterventions.forEach(item => { %>
+                <div style="padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background-color: var(--surface-alt);">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <strong style="font-size: 12px; color: var(--navy);"><%= item.issue %></strong>
+                    <span class="badge <%= item.status === 'Completed' ? 'normal' : 'important' %>"><%= item.status %></span>
+                  </div>
+                  <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0;"><%= item.action %></p>
+                  <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-subtle); margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 4px;">
+                    <span>Logged by: <%= item.facultyName %> on <%= item.createdDate %></span>
+                    <span>Follow-up: <b><%= item.followUpDate || 'None' %></b></span>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal for Logging Intervention Note -->
+  <div class="modal" id="addInterventionModal">
+    <div class="modal-backdrop" onclick="closeTeacherEdit('addInterventionModal')"></div>
+    <div class="modal-card">
+      <div class="modal-card-head">
+        <div>
+          <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">NEW FACULTY ACTION</p>
+          <h2>Log Intervention Note</h2>
+          <p class="subtitle">For Student: <%= student.name %> (<%= student.rollNo %>)</p>
+        </div>
+        <button class="modal-close" onclick="closeTeacherEdit('addInterventionModal')">×</button>
+      </div>
+
+      <form action="/teacher/interventions" method="POST" class="crud-form">
+        <input type="hidden" name="studentId" value="<%= student.id %>">
+        
+        <label>Identified Academic Issue / Reason</label>
+        <input type="text" name="issue" placeholder="e.g. Low attendance in DBMS, failing unit test marks" required>
+
+        <label>Intervention Action Taken / Recommendation</label>
+        <textarea name="action" placeholder="Describe counseling discussion, remedial tasks, or peer mentoring plan..." required></textarea>
+
+        <div class="form-two">
+          <div>
+            <label>Follow-up Date</label>
+            <input type="date" name="followUpDate" value="2026-09-20" required>
+          </div>
+          <div>
+            <label>Status</label>
+            <select name="status">
+              <option value="Pending">Pending Follow-up</option>
+              <option value="Completed">Completed / Resolved</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+          <button type="button" class="secondary-btn" onclick="closeTeacherEdit('addInterventionModal')">Cancel</button>
+          <button type="submit" class="primary-btn">Save Intervention Note</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const subs = <%- JSON.stringify(subjects) %>;
+
+      // 1. Marks Bar Chart
+      const mCtx = document.getElementById('studentMarksChart');
+      if (mCtx) {
+        new Chart(mCtx, {
+          type: 'bar',
+          data: {
+            labels: subs.map(s => s.code),
+            datasets: [{
+              label: 'Marks',
+              data: subs.map(s => s.marks),
+              backgroundColor: subs.map(s => s.marks >= 70 ? '#1d4ed8' : s.marks >= 50 ? '#f59e0b' : '#dc2626'),
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { min: 0, max: 100 } },
+            plugins: { legend: { display: false } }
+          }
+        });
+      }
+
+      // 2. Attendance Bar Chart
+      const aCtx = document.getElementById('studentAttendanceChart');
+      if (aCtx) {
+        new Chart(aCtx, {
+          type: 'bar',
+          data: {
+            labels: subs.map(s => s.code),
+            datasets: [{
+              label: 'Attendance %',
+              data: subs.map(s => s.attendance),
+              backgroundColor: subs.map(s => s.attendance >= 75 ? '#15803d' : '#dc2626'),
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { min: 0, max: 100 } },
+            plugins: { legend: { display: false } }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

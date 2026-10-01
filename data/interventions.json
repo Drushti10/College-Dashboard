@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "studentId": 4,
+    "studentName": "Rahul Varma",
+    "rollNo": "DS2026-045",
+    "issue": "Low attendance in DBMS (55%) and failing unit test marks",
+    "action": "Conducted 1-on-1 counseling session; assigned targeted revision problem set and peer study partner.",
+    "followUpDate": "2026-09-18",
+    "status": "Pending",
+    "createdDate": "2026-09-04",
+    "facultyName": "Prof. Ananya Kulkarni"
+  },
+  {
+    "id": 2,
+    "studentId": 8,
+    "studentName": "Vikram Rathod",
+    "rollNo": "DS2026-049",
+    "issue": "Critical attendance shortage across all subjects (58% overall) and missing lab assignments",
+    "action": "Issued official attendance warning letter to parents; arranged remedial tutorial slots during non-lecture hours.",
+    "followUpDate": "2026-09-15",
+    "status": "Pending",
+    "createdDate": "2026-09-02",
+    "facultyName": "Prof. Ananya Kulkarni"
+  },
+  {
+    "id": 3,
+    "studentId": 5,
+    "studentName": "Sneha Desai",
+    "rollNo": "DS2026-046",
+    "issue": "Borderline attendance in Machine Learning (72%) and DAA algorithm comprehension",
+    "action": "Reviewed lab submissions; provided supplementary tutorial recordings and code walkthrough notes.",
+    "followUpDate": "2026-09-12",
+    "status": "Completed",
+    "createdDate": "2026-08-28",
+    "facultyName": "Prof. Ananya Kulkarni"
+  }
+]

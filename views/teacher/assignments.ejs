@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Course Assignments | Faculty</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "assignments" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">COURSEWORK MANAGEMENT</p>
+          <h1>Assignment & Deliverable Administration</h1>
+          <p class="subtitle">Create curriculum problem sets, set deadlines, and monitor completion progress</p>
+        </div>
+        <div>
+          <button class="primary-btn" onclick="openTeacherEdit('addAssignmentModal')">+ Create New Assignment</button>
+        </div>
+      </div>
+
+      <% if (message) { %>
+        <div class="success-banner">
+          <span>✓</span> <%= message %>
+        </div>
+      <% } %>
+
+      <!-- Assignments Roster Table -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ASSIGNMENT DIRECTORY</p>
+            <h2>Active & Archived Coursework</h2>
+            <p><%= assignments.length %> managed academic deliverables</p>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="table-filter-bar">
+            <div class="table-search">
+              <span>🔍</span>
+              <input type="text" id="assSearch" placeholder="Filter by title, subject..." onkeyup="filterTable('assSearch', 'assTable')">
+            </div>
+            <span style="font-size: 11px; color: var(--text-muted);"><%= assignments.length %> Deliverables</span>
+          </div>
+
+          <table id="assTable">
+            <thead>
+              <tr>
+                <th>Assignment Title</th>
+                <th>Course Subject</th>
+                <th>Due Date</th>
+                <th>Submission Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% assignments.forEach(a => { %>
+                <tr>
+                  <td>
+                    <strong><%= a.title %></strong>
+                    <% if (a.description) { %>
+                      <small><%= a.description %></small>
+                    <% } %>
+                  </td>
+                  <td><%= a.subject %></td>
+                  <td><b><%= a.due %></b></td>
+                  <td>
+                    <span class="badge <%= a.status === 'Completed' || a.status === 'Submitted' ? 'normal' : a.status === 'In Progress' ? 'important' : 'urgent' %>">
+                      <%= a.status %>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="action-row">
+                      <button class="small-btn" onclick="openTeacherEdit('edit-ass-<%= a.id %>')">Edit</button>
+                      <form method="POST" action="/teacher/assignments/<%= a.id %>/delete" onsubmit="return confirm('Delete this assignment?');" style="display: inline;">
+                        <button type="submit" class="danger-btn">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add Assignment Modal -->
+  <div class="modal" id="addAssignmentModal">
+    <div class="modal-backdrop" onclick="closeTeacherEdit('addAssignmentModal')"></div>
+    <div class="modal-card">
+      <div class="modal-card-head">
+        <div>
+          <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">NEW DELIVERABLE</p>
+          <h2>Create Course Assignment</h2>
+        </div>
+        <button class="modal-close" onclick="closeTeacherEdit('addAssignmentModal')">×</button>
+      </div>
+
+      <form method="POST" action="/teacher/assignments" class="crud-form">
+        <label>Assignment Title</label>
+        <input name="title" placeholder="e.g. Distributed Consensus Algorithms" required>
+
+        <div class="form-two">
+          <div>
+            <label>Course Subject</label>
+            <input name="subject" placeholder="e.g. Computer Networks" required>
+          </div>
+          <div>
+            <label>Due Date</label>
+            <input type="date" name="due" value="2026-09-25" required>
+          </div>
+        </div>
+
+        <div>
+          <label>Status</label>
+          <select name="status">
+            <option value="Pending" selected>Pending Submissions</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed / Evaluated</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Brief Description / Instructions</label>
+          <textarea name="description" placeholder="Specify requirements, submission format, or rubric guidelines..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+          <button type="button" class="secondary-btn" onclick="closeTeacherEdit('addAssignmentModal')">Cancel</button>
+          <button class="primary-btn" type="submit">Publish Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Assignment Modals -->
+  <% assignments.forEach(a => { %>
+    <div class="modal" id="edit-ass-<%= a.id %>">
+      <div class="modal-backdrop" onclick="closeTeacherEdit('edit-ass-<%= a.id %>')"></div>
+      <div class="modal-card">
+        <div class="modal-card-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">UPDATE COURSEWORK</p>
+            <h2>Edit Assignment</h2>
+          </div>
+          <button class="modal-close" onclick="closeTeacherEdit('edit-ass-<%= a.id %>')">×</button>
+        </div>
+
+        <form method="POST" action="/teacher/assignments/<%= a.id %>/update" class="crud-form">
+          <label>Title</label>
+          <input name="title" value="<%= a.title %>" required>
+
+          <div class="form-two">
+            <div>
+              <label>Subject</label>
+              <input name="subject" value="<%= a.subject %>" required>
+            </div>
+            <div>
+              <label>Due Date</label>
+              <input type="date" name="due" value="<%= a.due %>" required>
+            </div>
+          </div>
+
+          <div>
+            <label>Status</label>
+            <select name="status">
+              <option value="Pending" <%= a.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+              <option value="In Progress" <%= a.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+              <option value="Completed" <%= a.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+              <option value="Submitted" <%= a.status === 'Submitted' ? 'selected' : '' %>>Submitted</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Description</label>
+            <textarea name="description"><%= a.description || '' %></textarea>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+            <button type="button" class="secondary-btn" onclick="closeTeacherEdit('edit-ass-<%= a.id %>')">Cancel</button>
+            <button class="primary-btn" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

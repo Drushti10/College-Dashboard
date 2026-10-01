@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class Timetable | MIT Academy of Engineering</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/student-nav", { active: "timetable" }) %>
+
+  <main class="main">
+    <%- include("../partials/student-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">ACADEMIC SCHEDULE</p>
+          <h1>Weekly Class & Laboratory Timetable</h1>
+          <p class="subtitle">B.E. Computer Science (Data Science) • Semester IV • Division DS-A</p>
+        </div>
+        <div>
+          <span class="badge primary" style="font-size: 12px; padding: 6px 12px;">Active Semester Schedule</span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;">
+        <% timetable.forEach(t => { %>
+          <div class="panel" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <strong style="font-size: 13px; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;"><%= t.day %></strong>
+                <span class="badge primary"><%= t.code %></span>
+              </div>
+
+              <h3 style="font-size: 15px; font-weight: 700; color: var(--navy); line-height: 1.3; margin-bottom: 8px;">
+                <%= t.subject %>
+              </h3>
+
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                <span>⏰</span> <%= t.time %>
+              </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border); padding-top: 10px; margin-top: 14px; font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between;">
+              <span>📍 <%= t.room %></span>
+              <span><%= t.faculty || 'Department Faculty' %></span>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

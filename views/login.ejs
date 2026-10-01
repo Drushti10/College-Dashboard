@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Portal | MIT Academy of Engineering</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-page">
+  <div class="login-background"></div>
+  <div class="login-overlay"></div>
+
+  <main class="login-shell">
+    <!-- Left Brand Section -->
+    <section class="login-brand-side">
+      <div class="login-brand-header">
+        <div class="brand-logo">MIT</div>
+        <div>
+          <strong style="font-size: 16px; display: block; color: #fff; line-height: 1.2;">MIT Academy of Engineering</strong>
+          <span style="font-size: 11px; color: #94a3b8; display: block;">An Autonomous Institute Affiliated to SPPU, Pune</span>
+        </div>
+      </div>
+
+      <div class="login-brand-copy">
+        <p class="eyebrow" style="color: #93c5fd; font-weight: 700; font-size: 11px; letter-spacing: 1px;">OFFICIAL ACADEMIC PORTAL</p>
+        <h1>Excellence in <span>Education & Research</span></h1>
+        <p>Integrated university gateway for students and faculty members. Seamlessly access attendance analytics, academic assessments, lecture schedules, and campus notices.</p>
+      </div>
+
+      <div class="login-feature-list">
+        <div class="login-feature-item">
+          <span>✓</span>
+          <div>Real-time attendance & continuous assessment tracking</div>
+        </div>
+        <div class="login-feature-item">
+          <span>✓</span>
+          <div>Faculty intelligence command center & early intervention</div>
+        </div>
+        <div class="login-feature-item">
+          <span>✓</span>
+          <div>Automated syllabus question generation & study planning</div>
+        </div>
+      </div>
+
+      <div style="font-size: 11px; color: #64748b; margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+        © 2026 MIT Academy of Engineering. Authorized institutional access only.
+      </div>
+    </section>
+
+    <!-- Right Login Card -->
+    <section class="login-card">
+      <div class="login-card-head">
+        <p class="eyebrow">INSTITUTIONAL LOGIN</p>
+        <h2>Sign In to Portal</h2>
+        <p class="muted">Enter your registered college email and credentials</p>
+      </div>
+
+      <% if (error) { %>
+        <div class="error-banner">
+          <span>⚠</span> <%= error %>
+        </div>
+      <% } %>
+
+      <form action="/login" method="POST">
+        <label style="font-size: 11px; font-weight: 600; color: var(--text-main);">Institutional Email</label>
+        <div class="input-wrap">
+          <span>✉</span>
+          <input type="email" name="email" id="loginEmail" placeholder="e.g. student@college.com" required autocomplete="username">
+        </div>
+
+        <label style="font-size: 11px; font-weight: 600; color: var(--text-main);">Password</label>
+        <div class="input-wrap">
+          <span>🔒</span>
+          <input type="password" name="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <div class="login-options">
+          <label>
+            <input type="checkbox" name="remember">
+            <span>Remember session</span>
+          </label>
+          <a href="#" onclick="alert('For password resets or credential assistance, please visit the Registrar / IT Support Desk in Building A.'); return false;">Help signing in?</a>
+        </div>
+
+        <button type="submit" class="primary-btn" style="width: 100%; height: 42px; font-size: 13px;">
+          Access Portal <span>→</span>
+        </button>
+      </form>
+
+      <!-- Quick Demo Access -->
+      <div class="demo-login-box">
+        <div class="demo-login-title">Quick Demo Login (1-Click)</div>
+        <div class="demo-buttons">
+          <button type="button" class="demo-btn" onclick="fillDemo('student@college.com', '123456')">
+            <strong>🎓 Student Account</strong>
+            <span>student@college.com</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="fillDemo('teacher@college.com', 'teacher123')">
+            <strong>👨‍🏫 Faculty Account</strong>
+            <span>teacher@college.com</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

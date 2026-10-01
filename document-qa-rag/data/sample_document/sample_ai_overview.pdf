@@ -1,0 +1,120 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 3 0 R >>
+endobj
+2 0 obj
+<< /Type /Outlines /Count 0 >>
+endobj
+3 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R] /Count 4 >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 3 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+6 0 obj
+<< /Length 557 >>
+stream
+BT
+/F1 12 Tf
+50 720 Td
+16 TL
+(ARTIFICIAL INTELLIGENCE OVERVIEW) '
+T*
+(Artificial Intelligence \(AI\) refers to the simulation of human intelligence in machines.) '
+(The goal of AI is to develop systems capable of performing tasks that typically require human cognition,) '
+(such as visual perception, speech recognition, decision-making, and language translation.) '
+T*
+(Machine Learning is a subset of AI that focuses on building applications that learn from data and improve) '
+(their accuracy over time without being explicitly programmed to do so.) '
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 3 0 R /MediaBox [0 0 612 792] /Contents 8 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+8 0 obj
+<< /Length 592 >>
+stream
+BT
+/F1 12 Tf
+50 720 Td
+16 TL
+(SUPERVISED AND UNSUPERVISED LEARNING) '
+T*
+(Supervised learning algorithms are trained using labeled datasets, where the desired output is known.) '
+(Common algorithms include Linear Regression, Support Vector Machines, and Decision Trees.) '
+(Supervised learning is widely used for classification and regression tasks like spam detection and price prediction.) '
+T*
+(Unsupervised learning uses unlabeled data to discover hidden patterns and clusters without human guidance.) '
+(Examples include K-Means Clustering and Principal Component Analysis \(PCA\).) '
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 3 0 R /MediaBox [0 0 612 792] /Contents 10 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+10 0 obj
+<< /Length 575 >>
+stream
+BT
+/F1 12 Tf
+50 720 Td
+16 TL
+(DEEP LEARNING AND NEURAL NETWORKS) '
+T*
+(Deep Learning is a specialized subfield of Machine Learning based on Artificial Neural Networks with representation learning.) '
+(The term deep refers to the number of layers in the network.) '
+(A typical deep neural network consists of an input layer, multiple hidden layers, and an output layer.) '
+T*
+(Convolutional Neural Networks \(CNNs\) excel at image processing, while Recurrent Neural Networks \(RNNs\) and) '
+(Transformers are designed for sequential data and natural language processing.) '
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 3 0 R /MediaBox [0 0 612 792] /Contents 12 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+12 0 obj
+<< /Length 662 >>
+stream
+BT
+/F1 12 Tf
+50 720 Td
+16 TL
+(RETRIEVAL-AUGMENTED GENERATION \(RAG\)) '
+T*
+(Retrieval-Augmented Generation \(RAG\) is an architectural framework that improves the accuracy of Large Language Models \(LLMs\).) '
+(Instead of relying solely on training weights, RAG retrieves relevant facts from an external knowledge base) '
+(or private document collection before generating a response.) '
+T*
+(Key advantages of RAG include:) '
+(1. Reduction in hallucination by grounding responses in verified source texts.) '
+(2. Access to domain-specific and up-to-date data without expensive fine-tuning.) '
+(3. Verifiable source citations and page transparency for users.) '
+ET
+endstream
+endobj
+xref
+0 13
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000110 00000 n 
+0000000186 00000 n 
+0000000256 00000 n 
+0000000382 00000 n 
+0000000990 00000 n 
+0000001116 00000 n 
+0000001759 00000 n 
+0000001886 00000 n 
+0000002513 00000 n 
+0000002641 00000 n 
+trailer
+<< /Size 13 /Root 1 0 R >>
+startxref
+3355
+%%EOF

@@ -1,0 +1,386 @@
+[
+  {
+    "id": 1,
+    "studentId": 1,
+    "subject": "Machine Learning",
+    "code": "ML",
+    "marks": 92,
+    "max": 100
+  },
+  {
+    "id": 2,
+    "studentId": 1,
+    "subject": "Data Structures & Algorithms",
+    "code": "DSA",
+    "marks": 88,
+    "max": 100
+  },
+  {
+    "id": 3,
+    "studentId": 1,
+    "subject": "Database Management Systems",
+    "code": "DBMS",
+    "marks": 84,
+    "max": 100
+  },
+  {
+    "id": 4,
+    "studentId": 1,
+    "subject": "Computer Networks",
+    "code": "CN",
+    "marks": 81,
+    "max": 100
+  },
+  {
+    "id": 5,
+    "studentId": 1,
+    "subject": "Design & Analysis of Algorithms",
+    "code": "DAA",
+    "marks": 86,
+    "max": 100
+  },
+  {
+    "id": 6,
+    "studentId": 1,
+    "subject": "Software Engineering",
+    "code": "SE",
+    "marks": 89,
+    "max": 100
+  },
+  {
+    "id": 7,
+    "studentId": 2,
+    "subject": "Machine Learning",
+    "code": "ML",
+    "marks": 86,
+    "max": 100
+  },
+  {
+    "id": 8,
+    "studentId": 2,
+    "subject": "Data Structures & Algorithms",
+    "code": "DSA",
+    "marks": 90,
+    "max": 100
+  },
+  {
+    "id": 9,
+    "studentId": 2,
+    "subject": "Database Management Systems",
+    "code": "DBMS",
+    "marks": 88,
+    "max": 100
+  },
+  {
+    "id": 10,
+    "studentId": 2,
+    "subject": "Computer Networks",
+    "code": "CN",
+    "marks": 84,
+    "max": 100
+  },
+  {
+    "id": 11,
+    "studentId": 2,
+    "subject": "Design & Analysis of Algorithms",
+    "code": "DAA",
+    "marks": 89,
+    "max": 100
+  },
+  {
+    "id": 12,
+    "studentId": 2,
+    "subject": "Software Engineering",
+    "code": "SE",
+    "marks": 87,
+    "max": 100
+  },
+  {
+    "id": 13,
+    "studentId": 3,
+    "subject": "Machine Learning",
+    "code": "ML",
+    "marks": 95,
+    "max": 100
+  },
+  {
+    "id": 14,
+    "studentId": 3,
+    "subject": "Data Structures & Algorithms",
+    "code": "DSA",
+    "marks": 93,
+    "max": 100
+  },
+  {
+    "id": 15,
+    "studentId": 3,
+    "subject": "Database Management Systems",
+    "code": "DBMS",
+    "marks": 91,
+    "max": 100
+  },
+  {
+    "id": 16,
+    "studentId": 3,
+    "subject": "Computer Networks",
+    "code": "CN",
+    "marks": 89,
+    "max": 100
+  },
+  {
+    "id": 17,
+    "studentId": 3,
+    "subject": "Design & Analysis of Algorithms",
+    "code": "DAA",
+    "marks": 94,
+    "max": 100
+  },
+  {
+    "id": 18,
+    "studentId": 3,
+    "subject": "Software Engineering",
+    "code": "SE",
+    "marks": 92,
+    "max": 100
+  },
+  {
+    "id": 19,
+    "studentId": 4,
+    "subject": "Machine Learning",
+    "code": "ML",
+    "marks": 52,
+    "max": 100
+  },
+  {
+    "id": 20,
+    "studentId": 4,
+    "subject": "Data Structures & Algorithms",
+    "code": "DSA",
+    "marks": 55,
+    "max": 100
+  },
+  {
+    "id": 21,
+    "studentId": 4,
+    "subject": "Database Management Systems",
+    "code": "DBMS",
+    "marks": 48,
+    "max": 100
+  },
+  {
+    "id": 22,
+    "studentId": 4,
+    "subject": "Computer Networks",
+    "code": "CN",
+    "marks": 58,
+    "max": 100
+  },
+  {
+    "id": 23,
+    "studentId": 4,
+    "subject": "Design & Analysis of Algorithms",
+    "code": "DAA",
+    "marks": 54,
+    "max": 100
+  },
+  {
+    "id": 24,
+    "studentId": 4,
+    "subject": "Software Engineering",
+    "code": "SE",
+    "marks": 60,
+    "max": 100
+  },
+  {
+    "id": 25,
+    "studentId": 5,
+    "subject": "Machine Learning",
+    "code": "ML",
+    "marks": 68,
+    "max": 100
+  },
+  {
+    "id": 26,
+    "studentId": 5,
+    "subject": "Data Structures & Algorithms",
+    "code": "DSA",
+    "marks": 62,
+    "max": 100
+  },
+  {
+    "id": 27,
+    "studentId": 5,
+    "subject": "Database Management Systems",
+    "code": "DBMS",
+    "marks": 64,
+    "max": 100
+  },
+  {
+    "id": 28,
+    "studentId": 5,
+    "subject": "Computer Networks",
+    "code": "CN",
+    "marks": 61,
+    "max": 100
+  },
+  {
+    "id": 29,
+    "studentId": 5,
+    "subject": "Design & Analysis of Algorithms",
+    "code": "DAA",
+    "marks": 65,
+    "max": 100
+  },
+  {
+    "id": 30,
+    "studentId": 5,
+    "subject": "Software Engineering",
+    "code": "SE",
+    "marks": 70,
+    "max": 100
+  },
+  {
+    "id": 31,
+    "studentId": 6,
+    "subject": "Machine Learning",
+    "code": "ML",
+    "marks": 82,
+    "max": 100
+  },
+  {
+    "id": 32,
+    "studentId": 6,
+    "subject": "Data Structures & Algorithms",
+    "code": "DSA",
+    "marks": 85,
+    "max": 100
+  },
+  {
+    "id": 33,
+    "studentId": 6,
+    "subject": "Database Management Systems",
+    "code": "DBMS",
+    "marks": 79,
+    "max": 100
+  },
+  {
+    "id": 34,
+    "studentId": 6,
+    "subject": "Computer Networks",
+    "code": "CN",
+    "marks": 80,
+    "max": 100
+  },
+  {
+    "id": 35,
+    "studentId": 6,
+    "subject": "Design & Analysis of Algorithms",
+    "code": "DAA",
+    "marks": 83,
+    "max": 100
+  },
+  {
+    "id": 36,
+    "studentId": 6,
+    "subject": "Software Engineering",
+    "code": "SE",
+    "marks": 84,
+    "max": 100
+  },
+  {
+    "id": 37,
+    "studentId": 7,
+    "subject": "Machine Learning",
+    "code": "ML",
+    "marks": 96,
+    "max": 100
+  },
+  {
+    "id": 38,
+    "studentId": 7,
+    "subject": "Data Structures & Algorithms",
+    "code": "DSA",
+    "marks": 94,
+    "max": 100
+  },
+  {
+    "id": 39,
+    "studentId": 7,
+    "subject": "Database Management Systems",
+    "code": "DBMS",
+    "marks": 95,
+    "max": 100
+  },
+  {
+    "id": 40,
+    "studentId": 7,
+    "subject": "Computer Networks",
+    "code": "CN",
+    "marks": 91,
+    "max": 100
+  },
+  {
+    "id": 41,
+    "studentId": 7,
+    "subject": "Design & Analysis of Algorithms",
+    "code": "DAA",
+    "marks": 97,
+    "max": 100
+  },
+  {
+    "id": 42,
+    "studentId": 7,
+    "subject": "Software Engineering",
+    "code": "SE",
+    "marks": 93,
+    "max": 100
+  },
+  {
+    "id": 43,
+    "studentId": 8,
+    "subject": "Machine Learning",
+    "code": "ML",
+    "marks": 49,
+    "max": 100
+  },
+  {
+    "id": 44,
+    "studentId": 8,
+    "subject": "Data Structures & Algorithms",
+    "code": "DSA",
+    "marks": 52,
+    "max": 100
+  },
+  {
+    "id": 45,
+    "studentId": 8,
+    "subject": "Database Management Systems",
+    "code": "DBMS",
+    "marks": 45,
+    "max": 100
+  },
+  {
+    "id": 46,
+    "studentId": 8,
+    "subject": "Computer Networks",
+    "code": "CN",
+    "marks": 53,
+    "max": 100
+  },
+  {
+    "id": 47,
+    "studentId": 8,
+    "subject": "Design & Analysis of Algorithms",
+    "code": "DAA",
+    "marks": 50,
+    "max": 100
+  },
+  {
+    "id": 48,
+    "studentId": 8,
+    "subject": "Software Engineering",
+    "code": "SE",
+    "marks": 56,
+    "max": 100
+  }
+]

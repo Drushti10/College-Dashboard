@@ -1,0 +1,290 @@
+[
+  {
+    "id": 1,
+    "studentId": 1,
+    "subject": "Machine Learning",
+    "percentage": 89
+  },
+  {
+    "id": 2,
+    "studentId": 1,
+    "subject": "DSA",
+    "percentage": 91
+  },
+  {
+    "id": 3,
+    "studentId": 1,
+    "subject": "DBMS",
+    "percentage": 86
+  },
+  {
+    "id": 4,
+    "studentId": 1,
+    "subject": "Computer Networks",
+    "percentage": 84
+  },
+  {
+    "id": 5,
+    "studentId": 1,
+    "subject": "Design & Analysis of Algorithms",
+    "percentage": 88
+  },
+  {
+    "id": 6,
+    "studentId": 1,
+    "subject": "Software Engineering",
+    "percentage": 85
+  },
+  {
+    "id": 7,
+    "studentId": 2,
+    "subject": "Machine Learning",
+    "percentage": 94
+  },
+  {
+    "id": 8,
+    "studentId": 2,
+    "subject": "DSA",
+    "percentage": 90
+  },
+  {
+    "id": 9,
+    "studentId": 2,
+    "subject": "DBMS",
+    "percentage": 92
+  },
+  {
+    "id": 10,
+    "studentId": 2,
+    "subject": "Computer Networks",
+    "percentage": 91
+  },
+  {
+    "id": 11,
+    "studentId": 2,
+    "subject": "Design & Analysis of Algorithms",
+    "percentage": 93
+  },
+  {
+    "id": 12,
+    "studentId": 2,
+    "subject": "Software Engineering",
+    "percentage": 92
+  },
+  {
+    "id": 13,
+    "studentId": 3,
+    "subject": "Machine Learning",
+    "percentage": 96
+  },
+  {
+    "id": 14,
+    "studentId": 3,
+    "subject": "DSA",
+    "percentage": 95
+  },
+  {
+    "id": 15,
+    "studentId": 3,
+    "subject": "DBMS",
+    "percentage": 94
+  },
+  {
+    "id": 16,
+    "studentId": 3,
+    "subject": "Computer Networks",
+    "percentage": 95
+  },
+  {
+    "id": 17,
+    "studentId": 3,
+    "subject": "Design & Analysis of Algorithms",
+    "percentage": 97
+  },
+  {
+    "id": 18,
+    "studentId": 3,
+    "subject": "Software Engineering",
+    "percentage": 93
+  },
+  {
+    "id": 19,
+    "studentId": 4,
+    "subject": "Machine Learning",
+    "percentage": 60
+  },
+  {
+    "id": 20,
+    "studentId": 4,
+    "subject": "DSA",
+    "percentage": 65
+  },
+  {
+    "id": 21,
+    "studentId": 4,
+    "subject": "DBMS",
+    "percentage": 55
+  },
+  {
+    "id": 22,
+    "studentId": 4,
+    "subject": "Computer Networks",
+    "percentage": 64
+  },
+  {
+    "id": 23,
+    "studentId": 4,
+    "subject": "Design & Analysis of Algorithms",
+    "percentage": 58
+  },
+  {
+    "id": 24,
+    "studentId": 4,
+    "subject": "Software Engineering",
+    "percentage": 64
+  },
+  {
+    "id": 25,
+    "studentId": 5,
+    "subject": "Machine Learning",
+    "percentage": 72
+  },
+  {
+    "id": 26,
+    "studentId": 5,
+    "subject": "DSA",
+    "percentage": 70
+  },
+  {
+    "id": 27,
+    "studentId": 5,
+    "subject": "DBMS",
+    "percentage": 68
+  },
+  {
+    "id": 28,
+    "studentId": 5,
+    "subject": "Computer Networks",
+    "percentage": 74
+  },
+  {
+    "id": 29,
+    "studentId": 5,
+    "subject": "Design & Analysis of Algorithms",
+    "percentage": 71
+  },
+  {
+    "id": 30,
+    "studentId": 5,
+    "subject": "Software Engineering",
+    "percentage": 71
+  },
+  {
+    "id": 31,
+    "studentId": 6,
+    "subject": "Machine Learning",
+    "percentage": 88
+  },
+  {
+    "id": 32,
+    "studentId": 6,
+    "subject": "DSA",
+    "percentage": 87
+  },
+  {
+    "id": 33,
+    "studentId": 6,
+    "subject": "DBMS",
+    "percentage": 89
+  },
+  {
+    "id": 34,
+    "studentId": 6,
+    "subject": "Computer Networks",
+    "percentage": 86
+  },
+  {
+    "id": 35,
+    "studentId": 6,
+    "subject": "Design & Analysis of Algorithms",
+    "percentage": 90
+  },
+  {
+    "id": 36,
+    "studentId": 6,
+    "subject": "Software Engineering",
+    "percentage": 88
+  },
+  {
+    "id": 37,
+    "studentId": 7,
+    "subject": "Machine Learning",
+    "percentage": 97
+  },
+  {
+    "id": 38,
+    "studentId": 7,
+    "subject": "DSA",
+    "percentage": 96
+  },
+  {
+    "id": 39,
+    "studentId": 7,
+    "subject": "DBMS",
+    "percentage": 95
+  },
+  {
+    "id": 40,
+    "studentId": 7,
+    "subject": "Computer Networks",
+    "percentage": 96
+  },
+  {
+    "id": 41,
+    "studentId": 7,
+    "subject": "Design & Analysis of Algorithms",
+    "percentage": 98
+  },
+  {
+    "id": 42,
+    "studentId": 7,
+    "subject": "Software Engineering",
+    "percentage": 94
+  },
+  {
+    "id": 43,
+    "studentId": 8,
+    "subject": "Machine Learning",
+    "percentage": 56
+  },
+  {
+    "id": 44,
+    "studentId": 8,
+    "subject": "DSA",
+    "percentage": 59
+  },
+  {
+    "id": 45,
+    "studentId": 8,
+    "subject": "DBMS",
+    "percentage": 54
+  },
+  {
+    "id": 46,
+    "studentId": 8,
+    "subject": "Computer Networks",
+    "percentage": 62
+  },
+  {
+    "id": 47,
+    "studentId": 8,
+    "subject": "Design & Analysis of Algorithms",
+    "percentage": 57
+  },
+  {
+    "id": 48,
+    "studentId": 8,
+    "subject": "Software Engineering",
+    "percentage": 60
+  }
+]

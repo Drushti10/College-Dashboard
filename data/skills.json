@@ -1,0 +1,10 @@
+{
+  "1": [
+    { "name": "Python Programming", "category": "Core Tech", "level": "Advanced", "progress": 90, "milestone": "AsyncIO & Data Processing Libraries" },
+    { "name": "SQL & Relational Databases", "category": "Data", "level": "Proficient", "progress": 82, "milestone": "Complex Queries, Triggers & Indexing" },
+    { "name": "Data Structures & Algorithms", "category": "Core Tech", "level": "Proficient", "progress": 85, "milestone": "Graphs, DP & Tree Traversals (180+ Solved)" },
+    { "name": "Machine Learning", "category": "AI / ML", "level": "Intermediate", "progress": 78, "milestone": "Supervised Learning, PyTorch & CNNs" },
+    { "name": "Full-Stack Development", "category": "Engineering", "level": "Proficient", "progress": 84, "milestone": "Node.js, Express, REST APIs & UI" },
+    { "name": "Technical Communication", "category": "Soft Skills", "level": "Advanced", "progress": 88, "milestone": "Paper Presentation & Seminar Delivery" }
+  ]
+}

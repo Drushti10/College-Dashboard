@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Students | Faculty</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "students" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">ACADEMIC ROSTER</p>
+          <h1>Student Information Management</h1>
+          <p class="subtitle">Complete CRUD lifecycle for enrolled candidate records, academic standing, and contact details</p>
+        </div>
+        <div>
+          <button class="primary-btn" onclick="openTeacherEdit('addStudentModal')">+ Add New Student</button>
+        </div>
+      </div>
+
+      <% if (message) { %>
+        <div class="success-banner">
+          <span>✓</span> <%= message %>
+        </div>
+      <% } %>
+
+      <!-- Statistics Banner -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon-wrap blue">👥</div>
+          <div class="stat-info">
+            <span>Total Enrolled</span>
+            <strong><%= students.length %></strong>
+            <small>Active Candidates</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap green">✓</div>
+          <div class="stat-info">
+            <span>Average Attendance</span>
+            <strong><%= Math.round(students.reduce((a, b) => a + Number(b.attendance || 0), 0) / (students.length || 1)) %>%</strong>
+            <small>Class Standing</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap purple">🎓</div>
+          <div class="stat-info">
+            <span>Class Mean CGPA</span>
+            <strong><%= (students.reduce((a, b) => a + Number(b.cgpa || 0), 0) / (students.length || 1)).toFixed(2) %></strong>
+            <small>Out of 10.00</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap amber">⚠</div>
+          <div class="stat-info">
+            <span>Below 75% Attendance</span>
+            <strong><%= students.filter(s => s.attendance < 75).length %></strong>
+            <small>Needs Intervention</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Students Table Panel -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">STUDENT DATABASE</p>
+            <h2>Enrolled Student Records</h2>
+            <p>Database of currently registered students in the Department</p>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="table-filter-bar">
+            <div class="table-search">
+              <span>🔍</span>
+              <input type="text" id="studentSearch" placeholder="Search by name, roll no, email..." onkeyup="filterTable('studentSearch', 'studentTable')">
+            </div>
+            <span style="font-size: 11px; color: var(--text-muted);"><%= students.length %> Records Displayed</span>
+          </div>
+
+          <table id="studentTable">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Roll Number</th>
+                <th>Degree Program</th>
+                <th>Year / Sem</th>
+                <th>CGPA</th>
+                <th>Attendance</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% students.forEach(s => { %>
+                <tr>
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div class="avatar small"><%= s.avatar || s.name.slice(0, 2).toUpperCase() %></div>
+                      <div>
+                        <strong><%= s.name %></strong>
+                        <small><%= s.email %></small>
+                      </div>
+                    </div>
+                  </td>
+                  <td><strong><%= s.rollNo %></strong></td>
+                  <td><%= s.course %></td>
+                  <td><%= s.year %> • Sem <%= s.semester %></td>
+                  <td>
+                    <strong style="color: var(--primary);"><%= Number(s.cgpa).toFixed(2) %></strong>
+                  </td>
+                  <td>
+                    <strong style="color: <%= s.attendance >= 75 ? 'var(--success)' : 'var(--danger)' %>;">
+                      <%= s.attendance %>%
+                    </strong>
+                  </td>
+                  <td>
+                    <div class="action-row">
+                      <a href="/teacher/students/<%= s.id %>/profile" class="small-btn" title="View 360° Academic Dossier">View 360°</a>
+                      <button class="small-btn" onclick="openTeacherEdit('edit-student-<%= s.id %>')">Edit</button>
+                      <form method="POST" action="/teacher/students/<%= s.id %>/delete" onsubmit="return confirm('Permanently delete student <%= s.name %> and all linked records?');" style="display: inline;">
+                        <button type="submit" class="danger-btn">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add Student Modal -->
+  <div class="modal" id="addStudentModal">
+    <div class="modal-backdrop" onclick="closeTeacherEdit('addStudentModal')"></div>
+    <div class="modal-card wide">
+      <div class="modal-card-head">
+        <div>
+          <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">NEW CANDIDATE</p>
+          <h2>Enroll New Student Record</h2>
+          <p class="subtitle">Create institutional student profile with credentials</p>
+        </div>
+        <button class="modal-close" onclick="closeTeacherEdit('addStudentModal')">×</button>
+      </div>
+
+      <form method="POST" action="/teacher/students" class="crud-form">
+        <div class="form-two">
+          <div>
+            <label>Full Student Name</label>
+            <input name="name" required placeholder="e.g. Yash Patil">
+          </div>
+          <div>
+            <label>Institutional Roll Number</label>
+            <input name="rollNo" required placeholder="e.g. DS2026-050">
+          </div>
+        </div>
+
+        <label>Degree Course</label>
+        <input name="course" required value="B.E. Computer Science (Data Science)">
+
+        <div class="form-two">
+          <div>
+            <label>Academic Year</label>
+            <select name="year">
+              <option value="2nd Year" selected>2nd Year</option>
+              <option value="1st Year">1st Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+            </select>
+          </div>
+          <div>
+            <label>Current Semester</label>
+            <select name="semester">
+              <option value="IV" selected>Semester IV</option>
+              <option value="I">Semester I</option>
+              <option value="II">Semester II</option>
+              <option value="III">Semester III</option>
+              <option value="V">Semester V</option>
+              <option value="VI">Semester VI</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-two">
+          <div>
+            <label>Current CGPA (0.00 - 10.00)</label>
+            <input type="number" step="0.01" min="0" max="10" name="cgpa" value="8.00" required>
+          </div>
+          <div>
+            <label>Overall Attendance (%)</label>
+            <input type="number" min="0" max="100" name="attendance" value="85" required>
+          </div>
+        </div>
+
+        <div class="form-two">
+          <div>
+            <label>Institutional Email</label>
+            <input type="email" name="email" placeholder="student@college.com">
+          </div>
+          <div>
+            <label>Contact Phone</label>
+            <input name="phone" placeholder="+91 98000 00000">
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+          <button type="button" class="secondary-btn" onclick="closeTeacherEdit('addStudentModal')">Cancel</button>
+          <button class="primary-btn" type="submit">Enroll Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Student Modals -->
+  <% students.forEach(s => { %>
+    <div class="modal" id="edit-student-<%= s.id %>">
+      <div class="modal-backdrop" onclick="closeTeacherEdit('edit-student-<%= s.id %>')"></div>
+      <div class="modal-card wide">
+        <div class="modal-card-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">MODIFY RECORD</p>
+            <h2>Edit Student: <%= s.name %></h2>
+            <p class="subtitle">Roll No: <%= s.rollNo %></p>
+          </div>
+          <button class="modal-close" onclick="closeTeacherEdit('edit-student-<%= s.id %>')">×</button>
+        </div>
+
+        <form method="POST" action="/teacher/students/<%= s.id %>/update" class="crud-form">
+          <div class="form-two">
+            <div>
+              <label>Full Name</label>
+              <input name="name" value="<%= s.name %>" required>
+            </div>
+            <div>
+              <label>Roll Number</label>
+              <input name="rollNo" value="<%= s.rollNo %>" required>
+            </div>
+          </div>
+
+          <label>Course Program</label>
+          <input name="course" value="<%= s.course %>" required>
+
+          <div class="form-two">
+            <div>
+              <label>Year</label>
+              <input name="year" value="<%= s.year %>">
+            </div>
+            <div>
+              <label>Semester</label>
+              <input name="semester" value="<%= s.semester %>">
+            </div>
+          </div>
+
+          <div class="form-two">
+            <div>
+              <label>CGPA</label>
+              <input name="cgpa" type="number" step="0.01" value="<%= s.cgpa %>" required>
+            </div>
+            <div>
+              <label>Attendance (%)</label>
+              <input name="attendance" type="number" value="<%= s.attendance %>" required>
+            </div>
+          </div>
+
+          <div class="form-two">
+            <div>
+              <label>Email</label>
+              <input name="email" value="<%= s.email %>">
+            </div>
+            <div>
+              <label>Phone</label>
+              <input name="phone" value="<%= s.phone %>">
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+            <button type="button" class="secondary-btn" onclick="closeTeacherEdit('edit-student-<%= s.id %>')">Cancel</button>
+            <button class="primary-btn" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Academic Profile | MIT Academy</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/student-nav", { active: "profile" }) %>
+
+  <main class="main">
+    <%- include("../partials/student-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">STUDENT IDENTITY</p>
+          <h1>Academic Dossier & Profile</h1>
+          <p class="subtitle">Official enrolled record and curriculum qualifications</p>
+        </div>
+        <span class="badge primary" style="font-size: 12px; padding: 6px 12px;">Active Degree Candidate</span>
+      </div>
+
+      <!-- Main Profile Information Card -->
+      <div class="panel">
+        <div style="display: flex; align-items: center; gap: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); flex-wrap: wrap;">
+          <div class="avatar large"><%= student.avatar || 'ST' %></div>
+          <div style="flex: 1;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+              <h2 style="font-size: 22px; font-weight: 800; color: var(--navy);"><%= student.name %></h2>
+              <span class="badge normal">Good Standing</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);"><%= student.course %></p>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Affiliation: Savitribai Phule Pune University • Autonomous Batch 2024-2028</p>
+          </div>
+          <div style="text-align: right;">
+            <strong style="font-size: 26px; color: var(--primary); display: block;"><%= Number(student.cgpa).toFixed(2) %></strong>
+            <small style="font-size: 11px; color: var(--text-muted);">Cumulative Grade Point Average (CGPA)</small>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-top: 24px;">
+          <div>
+            <span style="display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Roll Number</span>
+            <strong style="font-size: 14px; color: var(--navy); margin-top: 4px; display: block;"><%= student.rollNo %></strong>
+          </div>
+          <div>
+            <span style="display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Academic Year</span>
+            <strong style="font-size: 14px; color: var(--navy); margin-top: 4px; display: block;"><%= student.year %></strong>
+          </div>
+          <div>
+            <span style="display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Current Semester</span>
+            <strong style="font-size: 14px; color: var(--navy); margin-top: 4px; display: block;">Semester <%= student.semester %></strong>
+          </div>
+          <div>
+            <span style="display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">College Email</span>
+            <strong style="font-size: 14px; color: var(--navy); margin-top: 4px; display: block;"><%= student.email %></strong>
+          </div>
+          <div>
+            <span style="display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Contact Number</span>
+            <strong style="font-size: 14px; color: var(--navy); margin-top: 4px; display: block;"><%= student.phone %></strong>
+          </div>
+          <div>
+            <span style="display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Overall Attendance</span>
+            <strong style="font-size: 14px; color: var(--success); margin-top: 4px; display: block;"><%= student.attendance %>% Compliant</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill & Industry Competencies -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">SKILL MATRIX</p>
+            <h2>Verified Technical Competencies</h2>
+            <p>Practical software and data engineering proficiencies demonstrated through coursework</p>
+          </div>
+        </div>
+
+        <div class="skill-grid">
+          <% skills.forEach(sk => { %>
+            <div class="skill-card">
+              <div class="skill-header">
+                <strong><%= sk.name %></strong>
+                <span class="skill-level-badge"><%= sk.level %></span>
+              </div>
+              <div class="progress-track" style="height: 6px; margin: 6px 0;">
+                <div class="progress-fill <%= sk.progress >= 85 ? 'green' : '' %>" style="width: <%= sk.progress %>%;"></div>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted);"><%= sk.milestone %></div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

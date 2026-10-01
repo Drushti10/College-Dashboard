@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marks & Academic Performance | MIT Academy</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/student-nav", { active: "marks" }) %>
+
+  <main class="main">
+    <%- include("../partials/student-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">CONTINUOUS EVALUATION</p>
+          <h1>Marks & Internal Assessment</h1>
+          <p class="subtitle">Unit tests, continuous internal assessments (CIA), and lab practical evaluations</p>
+        </div>
+        <div style="text-align: right;">
+          <span class="badge primary" style="font-size: 12px; padding: 6px 12px;">Semester IV Grading</span>
+        </div>
+      </div>
+
+      <!-- Subject Cards Grid -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 24px;">
+        <% subjects.forEach(s => { 
+          let grade = 'A';
+          if (s.marks >= 90) grade = 'A+ (Outstanding)';
+          else if (s.marks >= 80) grade = 'A (Excellent)';
+          else if (s.marks >= 70) grade = 'B+ (Very Good)';
+          else if (s.marks >= 60) grade = 'B (Good)';
+          else if (s.marks >= 50) grade = 'C (Average)';
+          else grade = 'F (Remedial Needed)';
+        %>
+          <div class="panel" style="margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <span class="badge primary"><%= s.code %></span>
+              <span class="badge <%= s.marks >= 80 ? 'normal' : s.marks >= 60 ? 'important' : 'urgent' %>"><%= grade.split(' ')[0] %></span>
+            </div>
+
+            <h3 style="font-size: 14px; font-weight: 700; color: var(--navy); min-height: 38px; line-height: 1.3;"><%= s.name %></h3>
+
+            <div style="display: flex; align-items: baseline; gap: 6px; margin: 14px 0 10px;">
+              <strong style="font-size: 32px; font-weight: 800; color: var(--navy);"><%= s.marks %></strong>
+              <span style="font-size: 13px; color: var(--text-muted);">/ <%= s.max %></span>
+            </div>
+
+            <div class="progress-track" style="height: 8px; margin-bottom: 12px;">
+              <div class="progress-fill <%= s.marks >= 80 ? 'green' : s.marks >= 60 ? '' : 'red' %>" style="width: <%= (s.marks / s.max) * 100 %>%;"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 10px;">
+              <span>Evaluation Grade:</span>
+              <strong style="color: var(--navy);"><%= grade %></strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              <span>Linked Attendance:</span>
+              <strong style="color: <%= s.attendance >= 75 ? 'var(--success)' : 'var(--danger)' %>;"><%= s.attendance %>%</strong>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Test Score Simulator Widget -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">WHAT-IF GRADE ESTIMATOR</p>
+            <h2>Target Score & GPA Simulator</h2>
+            <p>Determine the impact of your upcoming mid-semester and end-semester scores</p>
+          </div>
+          <span class="badge primary">Real-time</span>
+        </div>
+
+        <div class="calc-inputs" style="max-width: 700px;">
+          <div class="calc-field">
+            <label>Current Cumulative Average</label>
+            <input type="number" id="currentMarksAvg" value="<%= academicHealth.breakdown.marks %>" readonly>
+          </div>
+          <div class="calc-field">
+            <label>Exams Evaluated</label>
+            <input type="number" id="examsConducted" value="6" oninput="calculateMarksWhatIf()">
+          </div>
+          <div class="calc-field">
+            <label>Projected Next Exam Score</label>
+            <input type="number" id="projectedNextScore" value="95" min="0" max="100" oninput="calculateMarksWhatIf()">
+          </div>
+        </div>
+
+        <div class="calc-result" style="max-width: 700px;">
+          <span>Projected Academic Average:</span>
+          <div>
+            <strong id="projectedMarksResult">88.5 / 100</strong>
+            <small id="marksDelta" style="display: block; font-size: 10px; color: var(--primary); text-align: right;">+2.5 pts change</small>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      calculateMarksWhatIf();
+    });
+  </script>
+</body>
+</html>

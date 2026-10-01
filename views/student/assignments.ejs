@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assignments & Smart Tasks | MIT Academy</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/student-nav", { active: "assignments" }) %>
+
+  <main class="main">
+    <%- include("../partials/student-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">ACADEMIC DELIVERABLES</p>
+          <h1>Assignments & Smart Task Tracker</h1>
+          <p class="subtitle">Prioritized coursework milestones, laboratory assignments, and project submissions</p>
+        </div>
+        <div>
+          <span class="badge primary" style="font-size: 12px; padding: 6px 12px;"><%= assignments.length %> Managed Course Tasks</span>
+        </div>
+      </div>
+
+      <% if (message) { %>
+        <div class="success-banner">
+          <span>✓</span> <%= message %>
+        </div>
+      <% } %>
+
+      <!-- Urgent Priority Section -->
+      <% if (priorityTasks.urgent.length > 0) { %>
+        <div class="panel" style="border-left: 4px solid var(--danger);">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--danger);">HIGH PRIORITY</p>
+              <h2>Urgent Deadlines (Action Required within 48 Hours)</h2>
+              <p>Tasks requiring immediate finalization to avoid late submission penalties</p>
+            </div>
+            <span class="badge urgent"><%= priorityTasks.urgent.length %> Urgent</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <% priorityTasks.urgent.forEach(task => { %>
+              <div class="task-item urgent" style="padding: 14px 16px;">
+                <div class="task-left">
+                  <div class="task-info">
+                    <strong style="font-size: 14px; color: var(--navy);"><%= task.title %></strong>
+                    <span style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                      <%= task.subject %> • Due: <b><%= task.due %></b> (<%= task.label %>)
+                    </span>
+                    <% if (task.description) { %>
+                      <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;"><%= task.description %></p>
+                    <% } %>
+                  </div>
+                </div>
+                <div class="task-right">
+                  <span class="badge urgent">Due Tomorrow</span>
+                  <form action="/assignments/<%= task.id %>/submit" method="POST">
+                    <button type="submit" class="primary-btn" style="padding: 7px 14px; font-size: 11px;">Upload & Submit</button>
+                  </form>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- Upcoming Tasks Section -->
+      <% if (priorityTasks.upcoming.length > 0) { %>
+        <div class="panel" style="border-left: 4px solid var(--warning);">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--warning);">SCHEDULED WORK</p>
+              <h2>Upcoming Deadlines (Next 3–5 Days)</h2>
+              <p>Active assignments currently in progress</p>
+            </div>
+            <span class="badge important"><%= priorityTasks.upcoming.length %> Scheduled</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <% priorityTasks.upcoming.forEach(task => { %>
+              <div class="task-item upcoming" style="padding: 14px 16px;">
+                <div class="task-left">
+                  <div class="task-info">
+                    <strong style="font-size: 14px; color: var(--navy);"><%= task.title %></strong>
+                    <span style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                      <%= task.subject %> • Due: <b><%= task.due %></b> (<%= task.label %>)
+                    </span>
+                    <% if (task.description) { %>
+                      <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;"><%= task.description %></p>
+                    <% } %>
+                  </div>
+                </div>
+                <div class="task-right">
+                  <span class="badge important"><%= task.label %></span>
+                  <form action="/assignments/<%= task.id %>/submit" method="POST">
+                    <button type="submit" class="secondary-btn" style="padding: 7px 14px; font-size: 11px;">Submit Early</button>
+                  </form>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- All Assignments Complete Table -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">COMPLETE ROSTER</p>
+            <h2>All Course Assignments & Status</h2>
+            <p>Archive of pending, in progress, and submitted academic coursework</p>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="table-filter-bar">
+            <div class="table-search">
+              <span>🔍</span>
+              <input type="text" id="assignmentSearch" placeholder="Filter by title or subject..." onkeyup="filterTable('assignmentSearch', 'assignmentTable')">
+            </div>
+            <span style="font-size: 11px; color: var(--text-muted);"><%= assignments.length %> Records Displayed</span>
+          </div>
+
+          <table id="assignmentTable">
+            <thead>
+              <tr>
+                <th>Assignment Title</th>
+                <th>Course Name</th>
+                <th>Submission Due</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% assignments.forEach(a => { %>
+                <tr>
+                  <td>
+                    <strong><%= a.title %></strong>
+                    <% if (a.description) { %>
+                      <small><%= a.description %></small>
+                    <% } %>
+                  </td>
+                  <td><%= a.subject %></td>
+                  <td><%= a.due %></td>
+                  <td>
+                    <span class="badge <%= a.status === 'Completed' || a.status === 'Submitted' ? 'normal' : a.status === 'In Progress' ? 'important' : 'urgent' %>">
+                      <%= a.status %>
+                    </span>
+                  </td>
+                  <td>
+                    <% if (a.status !== 'Submitted' && a.status !== 'Completed') { %>
+                      <form method="POST" action="/assignments/<%= a.id %>/submit" style="display: inline;">
+                        <button class="small-btn" type="submit">Submit</button>
+                      </form>
+                    <% } else { %>
+                      <span style="font-size: 11px; color: var(--success); font-weight: 600;">✓ Completed</span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

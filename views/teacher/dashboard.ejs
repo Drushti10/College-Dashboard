@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Command Center | MIT Academy</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "dashboard" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <!-- Welcome Hero -->
+      <section class="dashboard-hero" style="background-color: var(--navy); height: 210px;">
+        <img src="/images/faculty-mentoring.jpg" alt="Faculty Research & Mentoring">
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <p class="eyebrow">FACULTY ACADEMIC CONTROL CENTER</p>
+          <h1>Welcome, <span><%= user.name %>!</span> 👋</h1>
+          <p>Classroom intelligence, student diagnostics, intervention tracking, and curriculum assessment.</p>
+          <div class="hero-pills">
+            <span>● <%= user.department || 'Computer Engineering' %></span>
+            <span>● <%= user.designation || 'Faculty Member' %></span>
+            <span>● <%= analytics.totalStudents %> Enrolled Students</span>
+            <span>● <%= analytics.highRiskCount %> Critical Interventions Required</span>
+          </div>
+        </div>
+        <a class="hero-badge-link" href="/teacher/analytics">
+          <span>Performance Analytics</span> →
+        </a>
+      </section>
+
+      <!-- Overview Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon-wrap blue">👥</div>
+          <div class="stat-info">
+            <span>Total Enrolled Students</span>
+            <strong><%= analytics.totalStudents %></strong>
+            <small><b>100%</b> Active in System</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap green">✓</div>
+          <div class="stat-info">
+            <span>Average Attendance</span>
+            <strong><%= analytics.avgAttendance %>%</strong>
+            <small><b><%= analytics.attendanceBrackets.above85 %> Students</b> Above 85%</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap purple">📊</div>
+          <div class="stat-info">
+            <span>Class Average (CGPA)</span>
+            <strong><%= analytics.avgCgpa %></strong>
+            <small>Course Passing: <b><%= analytics.passPercentage %>%</b></small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap rose">⚠</div>
+          <div class="stat-info">
+            <span>At-Risk Students</span>
+            <strong><%= analytics.studentsNeedingAttention.length %></strong>
+            <small><b style="color: var(--danger);"><%= analytics.highRiskCount %> High Risk</b> • Action required</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Modules -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;">
+        <a href="/teacher/students" class="stat-card" style="padding: 14px 16px;">
+          <div style="font-size: 22px;">👥</div>
+          <div>
+            <strong style="font-size: 13px; color: var(--navy); display: block;">Manage Students</strong>
+            <small style="color: var(--text-muted); font-size: 11px;">Create, edit, view roster</small>
+          </div>
+        </a>
+
+        <a href="/teacher/at-risk" class="stat-card" style="padding: 14px 16px; border-left: 3px solid var(--danger);">
+          <div style="font-size: 22px;">⚠</div>
+          <div>
+            <strong style="font-size: 13px; color: var(--navy); display: block;">At-Risk Detection</strong>
+            <small style="color: var(--danger); font-size: 11px;"><%= analytics.studentsNeedingAttention.length %> flagged students</small>
+          </div>
+        </a>
+
+        <a href="/teacher/interventions" class="stat-card" style="padding: 14px 16px;">
+          <div style="font-size: 22px;">📋</div>
+          <div>
+            <strong style="font-size: 13px; color: var(--navy); display: block;">Intervention Notes</strong>
+            <small style="color: var(--text-muted); font-size: 11px;">Log 1-on-1 counseling</small>
+          </div>
+        </a>
+
+        <a href="/teacher/question-generator" class="stat-card" style="padding: 14px 16px; border-left: 3px solid var(--primary);">
+          <div style="font-size: 22px;">⚙</div>
+          <div>
+            <strong style="font-size: 13px; color: var(--navy); display: block;">Question Generator</strong>
+            <small style="color: var(--primary); font-size: 11px;">Generate exam papers</small>
+          </div>
+        </a>
+      </div>
+
+      <!-- Charts Section: Performance Overview & Attendance Distribution -->
+      <div class="dashboard-columns two-col-50-50" style="margin-bottom: 24px;">
+        <!-- Subject Performance Comparison Chart -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">CLASS PERFORMANCE INTELLIGENCE</p>
+              <h2>Subject Performance Comparison</h2>
+              <p>Mean continuous internal assessment marks across subjects</p>
+            </div>
+            <a href="/teacher/analytics" class="small-btn">Deep Dive →</a>
+          </div>
+
+          <div style="height: 240px; position: relative;">
+            <canvas id="subjectPerformanceChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Attendance Distribution Chart -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ATTENDANCE ANALYTICS</p>
+              <h2>Attendance Cohort Distribution</h2>
+              <p>Categorization against statutory 75% SPPU attendance regulations</p>
+            </div>
+            <span class="badge primary">Class Distribution</span>
+          </div>
+
+          <div style="height: 240px; position: relative;">
+            <canvas id="attendanceDistChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Students Needing Attention (At-Risk Early Warning Table) -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--danger);">EARLY INTERVENTION ALERT</p>
+            <h2>Students Requiring Academic Attention</h2>
+            <p>Students flagged with low attendance, failing marks, or deficient submissions</p>
+          </div>
+          <a href="/teacher/at-risk" class="small-btn">View All At-Risk (<%= analytics.studentsNeedingAttention.length %>) →</a>
+        </div>
+
+        <div class="table-panel">
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Roll No.</th>
+                <th>Attendance</th>
+                <th>Avg Marks</th>
+                <th>Risk Classification</th>
+                <th>Primary Deficiency Factors</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% analytics.studentsNeedingAttention.forEach(s => { %>
+                <tr>
+                  <td>
+                    <strong><%= s.name %></strong>
+                    <small><%= s.email %></small>
+                  </td>
+                  <td><%= s.rollNo %></td>
+                  <td>
+                    <strong style="color: <%= s.avgAttendance < 75 ? 'var(--danger)' : 'var(--success)' %>;">
+                      <%= s.avgAttendance %>%
+                    </strong>
+                  </td>
+                  <td>
+                    <strong><%= s.avgMarks %> / 100</strong>
+                  </td>
+                  <td>
+                    <span class="badge <%= s.riskLevel === 'HIGH RISK' ? 'urgent' : 'important' %>">
+                      <%= s.riskLevel %>
+                    </span>
+                  </td>
+                  <td>
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                      <% s.factors.forEach(f => { %>
+                        <span class="badge" style="font-size: 10px;"><%= f %></span>
+                      <% }) %>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-row">
+                      <a href="/teacher/students/<%= s.id %>/profile" class="primary-btn" style="padding: 5px 10px; font-size: 11px;">
+                        View Student
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Upcoming Tasks & Recent Notices Side by Side -->
+      <div class="dashboard-columns two-col-50-50">
+        <!-- Managed Academic Assignments -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ACTIVE DELIVERABLES</p>
+              <h2>Managed Assignments & Deadlines</h2>
+              <p>Track student submissions across active course milestones</p>
+            </div>
+            <a href="/teacher/assignments" class="small-btn">Manage →</a>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <% assignments.slice(0, 4).forEach(a => { %>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background-color: var(--surface);">
+                <div>
+                  <strong style="font-size: 12px; color: var(--navy); display: block;"><%= a.title %></strong>
+                  <span style="font-size: 11px; color: var(--text-muted);"><%= a.subject %> • Due: <%= a.due %></span>
+                </div>
+                <span class="badge <%= a.status === 'Completed' || a.status === 'Submitted' ? 'normal' : 'important' %>">
+                  <%= a.status %>
+                </span>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+
+        <!-- Recent Notices Published -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">FACULTY BULLETINS</p>
+              <h2>Recent Published Notices</h2>
+              <p>Announcements distributed to enrolled students</p>
+            </div>
+            <a href="/teacher/notices" class="small-btn">Publish Notice →</a>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <% notices.slice(0, 3).forEach(n => { %>
+              <div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background-color: var(--surface);">
+                <div style="font-size: 18px;"><%= n.icon || '📢' %></div>
+                <div style="flex: 1;">
+                  <strong style="font-size: 12px; color: var(--navy); display: block;"><%= n.title %></strong>
+                  <span style="font-size: 10px; color: var(--text-muted);"><%= n.type %> • <%= n.date %></span>
+                </div>
+                <span class="badge <%= n.priority === 'Urgent' ? 'urgent' : n.priority === 'Important' ? 'important' : 'normal' %>">
+                  <%= n.priority || 'Normal' %>
+                </span>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+  <script>
+    // Initialize Dashboard Charts
+    document.addEventListener("DOMContentLoaded", function() {
+      // 1. Subject Performance Bar Chart
+      const subjectCtx = document.getElementById('subjectPerformanceChart');
+      if (subjectCtx) {
+        const subData = <%- JSON.stringify(analytics.subjectAverages) %>;
+        new Chart(subjectCtx, {
+          type: 'bar',
+          data: {
+            labels: subData.map(s => s.code),
+            datasets: [{
+              label: 'Class Average Marks',
+              data: subData.map(s => s.average),
+              backgroundColor: '#1d4ed8',
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { min: 0, max: 100, ticks: { stepSize: 20 } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+      }
+
+      // 2. Attendance Distribution Doughnut Chart
+      const attCtx = document.getElementById('attendanceDistChart');
+      if (attCtx) {
+        new Chart(attCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Above 85% (Excellent)', '75% - 85% (Compliant)', 'Below 75% (Shortage)'],
+            datasets: [{
+              data: [
+                <%= analytics.attendanceBrackets.above85 %>,
+                <%= analytics.attendanceBrackets.midRange %>,
+                <%= analytics.attendanceBrackets.below75 %>
+              ],
+              backgroundColor: ['#15803d', '#2563eb', '#b91c1c'],
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

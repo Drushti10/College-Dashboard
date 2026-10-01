@@ -1,0 +1,28 @@
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="menu-btn" onclick="toggleSidebar()" aria-label="Toggle Menu">☰</button>
+    <div>
+      <span class="crumb">MIT Academy of Engineering</span>
+      <small>Student Academic Management Portal • Semester IV</small>
+    </div>
+  </div>
+
+  <div class="top-actions">
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" placeholder="Search subjects, notices..." onkeydown="if(event.key==='Enter') window.location.href='/notices';">
+    </div>
+
+    <button class="icon-btn" onclick="openNotifications()" aria-label="Notifications" title="View Notifications">
+      🔔<i></i>
+    </button>
+
+    <div class="user-mini">
+      <div>
+        <strong><%= student.name %></strong>
+        <span><%= student.rollNo %></span>
+      </div>
+      <div class="avatar small"><%= student.avatar || 'ST' %></div>
+    </div>
+  </div>
+</header>

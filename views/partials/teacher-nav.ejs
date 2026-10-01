@@ -1,0 +1,61 @@
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-logo">MIT</div>
+    <div>
+      <strong>Faculty Portal</strong>
+      <span>Command Center</span>
+    </div>
+  </div>
+
+  <div class="side-label">Academic Management</div>
+  <nav>
+    <a class="<%= active === 'dashboard' ? 'active' : '' %>" href="/teacher">
+      <span>⌂</span>Dashboard
+    </a>
+    <a class="<%= active === 'students' ? 'active' : '' %>" href="/teacher/students">
+      <span>👥</span>Students <em>CRUD</em>
+    </a>
+    <a class="<%= active === 'marks' ? 'active' : '' %>" href="/teacher/marks">
+      <span>📊</span>Marks <em>CRUD</em>
+    </a>
+    <a class="<%= active === 'attendance' ? 'active' : '' %>" href="/teacher/attendance">
+      <span>✓</span>Attendance <em>CRUD</em>
+    </a>
+    <a class="<%= active === 'assignments' ? 'active' : '' %>" href="/teacher/assignments">
+      <span>📝</span>Assignments <em>CRUD</em>
+    </a>
+    <a class="<%= active === 'notices' ? 'active' : '' %>" href="/teacher/notices">
+      <span>📢</span>Notices <em>CRUD</em>
+    </a>
+  </nav>
+
+  <div class="side-label" style="margin-top: 14px;">Faculty Intelligence</div>
+  <nav>
+    <a class="<%= active === 'analytics' ? 'active' : '' %>" href="/teacher/analytics">
+      <span>📈</span>Performance Analytics
+    </a>
+    <a class="<%= active === 'at-risk' ? 'active' : '' %>" href="/teacher/at-risk">
+      <span>⚠</span>At-Risk Detection
+    </a>
+    <a class="<%= active === 'interventions' ? 'active' : '' %>" href="/teacher/interventions">
+      <span>📋</span>Interventions
+    </a>
+    <a class="<%= active === 'question-generator' ? 'active' : '' %>" href="/teacher/question-generator">
+      <span>⚙</span>Question Generator
+    </a>
+  </nav>
+
+  <div class="side-campus">
+    <div class="side-campus-card">
+      <img src="/images/mit-campus.jpg" alt="MIT Academy Campus">
+      <div class="side-campus-text">
+        <strong>MIT Academy</strong>
+        <span>Faculty Workspace</span>
+      </div>
+    </div>
+  </div>
+
+  <a class="logout" href="/logout">
+    <span>↪</span> Sign Out
+  </a>
+</aside>

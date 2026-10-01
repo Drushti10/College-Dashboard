@@ -1,0 +1,48 @@
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-logo">MIT</div>
+    <div>
+      <strong>MIT Academy</strong>
+      <span>Student Portal</span>
+    </div>
+  </div>
+
+  <div class="side-label">Academic Menu</div>
+  <nav>
+    <a class="<%= active === 'dashboard' ? 'active' : '' %>" href="/dashboard">
+      <span>⌂</span>Dashboard
+    </a>
+    <a class="<%= active === 'profile' ? 'active' : '' %>" href="/profile">
+      <span>👤</span>My Profile
+    </a>
+    <a class="<%= active === 'attendance' ? 'active' : '' %>" href="/attendance">
+      <span>✓</span>Attendance
+    </a>
+    <a class="<%= active === 'marks' ? 'active' : '' %>" href="/marks">
+      <span>📊</span>Marks & Grades
+    </a>
+    <a class="<%= active === 'assignments' ? 'active' : '' %>" href="/assignments">
+      <span>📝</span>Assignments
+    </a>
+    <a class="<%= active === 'timetable' ? 'active' : '' %>" href="/timetable">
+      <span>📅</span>Timetable
+    </a>
+    <a class="<%= active === 'notices' ? 'active' : '' %>" href="/notices">
+      <span>📢</span>Notices
+    </a>
+  </nav>
+
+  <div class="side-campus">
+    <div class="side-campus-card">
+      <img src="/images/campus-life.jpg" alt="MIT Campus Life">
+      <div class="side-campus-text">
+        <strong>Campus Life</strong>
+        <span>Explore campus activities</span>
+      </div>
+    </div>
+  </div>
+
+  <a class="logout" href="/logout">
+    <span>↪</span> Sign Out
+  </a>
+</aside>

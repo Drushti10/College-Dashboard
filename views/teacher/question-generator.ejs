@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question Paper Generator | Faculty</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #printableArea, #printableArea * { visibility: visible; }
+      #printableArea { position: absolute; left: 0; top: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "question-generator" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <div class="page-header no-print">
+        <div class="page-title">
+          <p class="eyebrow">CURRICULUM ENGINE</p>
+          <h1>AI Question Paper & Assessment Generator</h1>
+          <p class="subtitle">Generate syllabus-aligned continuous internal assessment question papers with automated distribution</p>
+        </div>
+      </div>
+
+      <!-- Generator Configuration Form -->
+      <div class="panel no-print">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ASSESSMENT PARAMETERS</p>
+            <h2>Configure Assessment Specifications</h2>
+            <p>Select target course, core topic, Bloom's taxonomy difficulty, and examination weightage</p>
+          </div>
+          <span class="badge primary">Curriculum-Aware Engine</span>
+        </div>
+
+        <form action="/teacher/question-generator" method="POST" class="crud-form">
+          <div class="form-two">
+            <div>
+              <label>Target Academic Subject</label>
+              <select name="subject" required>
+                <option value="Data Structures & Algorithms">Data Structures & Algorithms (DSA)</option>
+                <option value="Database Management Systems">Database Management Systems (DBMS)</option>
+                <option value="Machine Learning">Machine Learning (ML)</option>
+                <option value="Computer Networks">Computer Networks (CN)</option>
+                <option value="Design & Analysis of Algorithms">Design & Analysis of Algorithms (DAA)</option>
+                <option value="Software Engineering">Software Engineering (SE)</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Core Topic / Curriculum Module</label>
+              <input type="text" name="topic" placeholder="e.g. Trees, Normalization, Neural Networks" value="Trees">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+            <div>
+              <label>Cognitive Difficulty</label>
+              <select name="difficulty">
+                <option value="Medium">Medium (Balanced Theory & Application)</option>
+                <option value="Easy">Easy (Conceptual / Foundational)</option>
+                <option value="Hard">Hard (Analytical / Design & Proofs)</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Number of Questions</label>
+              <select name="numQuestions">
+                <option value="5">5 Questions (1 Hour CIA)</option>
+                <option value="8" selected>8 Questions (2 Hours Mid-Term)</option>
+                <option value="10">10 Questions (Comprehensive Examination)</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Total Marks Weightage</label>
+              <select name="maxMarks">
+                <option value="25">25 Marks (Unit Assessment)</option>
+                <option value="50" selected>50 Marks (Mid-Semester Exam)</option>
+                <option value="100">100 Marks (End-Semester Exam)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px;">
+            <button type="submit" class="primary-btn" style="padding: 10px 22px; font-size: 13px;">
+              ⚡ Generate Question Paper
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Generated Question Paper Preview -->
+      <% if (paper) { %>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;" class="no-print">
+          <div>
+            <h2 style="font-size: 16px; font-weight: 700; color: var(--navy);">Formatted Examination Paper Preview</h2>
+            <span style="font-size: 12px; color: var(--text-muted);">Print-ready layout formatted according to MIT Academy institutional templates</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="secondary-btn" onclick="window.print()">🖨 Print / Export PDF</button>
+            <a href="/teacher/question-generator" class="small-btn">Clear Preview</a>
+          </div>
+        </div>
+
+        <div class="paper-preview-wrap" id="printableArea">
+          <!-- Institutional Header -->
+          <div class="paper-header">
+            <h2><%= paper.institution %></h2>
+            <h3><%= paper.subHeader %></h3>
+            <p style="font-size: 13px; font-weight: 700; color: var(--navy); margin-top: 4px;"><%= paper.department %></p>
+            <p style="font-size: 13px; font-weight: 600; color: var(--primary); margin-top: 2px;"><%= paper.examTitle %></p>
+          </div>
+
+          <!-- Metadata Details Table -->
+          <table class="paper-meta-table">
+            <tr>
+              <td><strong>Course:</strong> <%= paper.subject %></td>
+              <td><strong>Target Topic:</strong> <%= paper.topic %></td>
+              <td><strong>Date:</strong> <%= paper.dateGenerated %></td>
+            </tr>
+            <tr>
+              <td><strong>Duration:</strong> <%= paper.duration %></td>
+              <td><strong>Maximum Marks:</strong> <%= paper.maxMarks %> Marks</td>
+              <td><strong>Difficulty Level:</strong> <%= paper.difficulty %></td>
+            </tr>
+          </table>
+
+          <!-- General Instructions -->
+          <div class="paper-instructions">
+            <strong>General Examination Instructions:</strong>
+            <ul>
+              <% paper.instructions.forEach(inst => { %>
+                <li><%= inst %></li>
+              <% }) %>
+            </ul>
+          </div>
+
+          <!-- Sections & Questions -->
+          <% paper.sections.forEach(sec => { %>
+            <div class="paper-section-title"><%= sec.title %></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <% sec.questions.forEach(q => { %>
+                <div class="paper-question-item">
+                  <div class="paper-question-text">
+                    <strong>Q<%= q.qNum %>.</strong> <%= q.text %>
+                    <span style="font-size: 10px; color: var(--text-muted); margin-left: 8px;">[<%= q.type %>]</span>
+                  </div>
+                  <div class="paper-question-marks">[<%= q.marks %> Marks]</div>
+                </div>
+              <% }) %>
+            </div>
+          <% }) %>
+
+          <div style="margin-top: 36px; text-align: center; border-top: 1px solid var(--border); padding-top: 14px; font-size: 11px; color: var(--text-muted);">
+            *** END OF QUESTION PAPER • MIT ACADEMY OF ENGINEERING ***
+          </div>
+        </div>
+      <% } else { %>
+        <!-- Default State with Pre-generated Sample -->
+        <div style="padding: 40px; text-align: center; background-color: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-md); color: var(--text-muted);" class="no-print">
+          <div style="font-size: 32px; margin-bottom: 8px;">📑</div>
+          <h3 style="font-size: 15px; color: var(--navy); margin-bottom: 4px;">No Question Paper Generated Yet</h3>
+          <p style="font-size: 12px; max-width: 500px; margin: 0 auto 16px;">
+            Configure the parameters above and click "Generate Question Paper" to automatically assemble a curriculum-aligned test paper with section divisions and marking schemes.
+          </p>
+        </div>
+      <% } %>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

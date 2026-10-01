@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal | MIT Academy of Engineering</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/student-nav", { active: "dashboard" }) %>
+
+  <main class="main">
+    <%- include("../partials/student-header") %>
+
+    <section class="content">
+      <!-- 1. CAMPUS HERO -->
+      <section class="dashboard-hero">
+        <img src="/images/mit-campus.jpg" alt="MIT Academy of Engineering Campus">
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <p class="eyebrow">MIT ACADEMY OF ENGINEERING • ACADEMIC YEAR 2026</p>
+          <h1>Welcome back, <span><%= student.name.split(' ')[0] %>!</span> 👋</h1>
+          <p>You are currently on track for Semester IV. Here is your unified academic intelligence overview.</p>
+          <div class="hero-pills">
+            <span>● B.E. Computer Science (Data Science)</span>
+            <span>● Semester IV</span>
+            <span>● Roll No: <%= student.rollNo %></span>
+            <span>● Pune Campus</span>
+          </div>
+        </div>
+        <a class="hero-badge-link" href="/profile">
+          <span>Student Profile</span> →
+        </a>
+      </section>
+
+      <!-- 2. QUICK STATS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon-wrap purple">🎓</div>
+          <div class="stat-info">
+            <span>Current CGPA</span>
+            <strong><%= student.cgpa.toFixed ? student.cgpa.toFixed(2) : student.cgpa %></strong>
+            <small><b>Honor Standing</b> • Top Quartile</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap green">✓</div>
+          <div class="stat-info">
+            <span>Overall Attendance</span>
+            <strong><%= student.attendance %>%</strong>
+            <small><b>Compliant</b> • Minimum 75% req.</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap amber">📝</div>
+          <div class="stat-info">
+            <span>Pending Assignments</span>
+            <strong><%= priorityTasks.urgent.length + priorityTasks.upcoming.length %></strong>
+            <small><b><%= priorityTasks.urgent.length %> Urgent</b> • Due within 48h</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap blue">⭐</div>
+          <div class="stat-info">
+            <span>Academic Health</span>
+            <strong><%= academicHealth.score %> / 100</strong>
+            <small><b class="<%= academicHealth.status === 'Excellent' ? '' : 'style-muted' %>"><%= academicHealth.status %></b> Rating</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. ACADEMIC HEALTH & WHAT-IF CALCULATOR -->
+      <div class="dashboard-columns two-col-50-50" style="margin-bottom: 24px;">
+        <!-- Academic Health Scorecard -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">DIAGNOSTIC SUMMARY</p>
+              <h2>Academic Health & Performance</h2>
+              <p>Holistic index computed from attendance, tests, submissions & consistency</p>
+            </div>
+            <span class="badge <%= academicHealth.status === 'Excellent' ? 'normal' : academicHealth.status === 'Good' ? 'important' : 'urgent' %>">
+              <%= academicHealth.status %>
+            </span>
+          </div>
+
+          <div class="health-widget" style="--health-pct: <%= academicHealth.score %>;">
+            <div class="health-dial">
+              <div class="health-dial-inner">
+                <strong><%= academicHealth.score %></strong>
+                <span>Score / 100</span>
+              </div>
+            </div>
+
+            <div class="health-breakdown">
+              <div class="health-bar-item">
+                <span>Attendance <b><%= academicHealth.breakdown.attendance %>%</b></span>
+                <div class="progress-track">
+                  <div class="progress-fill green" style="width: <%= academicHealth.breakdown.attendance %>%;"></div>
+                </div>
+              </div>
+
+              <div class="health-bar-item">
+                <span>Assessment Marks <b><%= academicHealth.breakdown.marks %>%</b></span>
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: <%= academicHealth.breakdown.marks %>%;"></div>
+                </div>
+              </div>
+
+              <div class="health-bar-item">
+                <span>Assignment Delivery <b><%= academicHealth.breakdown.assignments %>%</b></span>
+                <div class="progress-track">
+                  <div class="progress-fill green" style="width: <%= academicHealth.breakdown.assignments %>%;"></div>
+                </div>
+              </div>
+
+              <div class="health-bar-item">
+                <span>Study Consistency <b><%= academicHealth.breakdown.consistency %>%</b></span>
+                <div class="progress-track">
+                  <div class="progress-fill amber" style="width: <%= academicHealth.breakdown.consistency %>%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive What-If Simulator -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">SIMULATION TOOL</p>
+              <h2>What-If Grade & Attendance Simulator</h2>
+              <p>Project your target standing by simulating upcoming classes & test scores</p>
+            </div>
+            <span class="badge primary">Interactive</span>
+          </div>
+
+          <!-- Attendance Simulation -->
+          <div class="calc-card">
+            <div class="calc-title">
+              <span>📅</span> Attendance Projection
+            </div>
+            <div class="calc-desc">Enter additional consecutive classes you will attend:</div>
+            <div class="calc-inputs">
+              <div class="calc-field">
+                <label>Current Attendance %</label>
+                <input type="number" id="currentAttendancePct" value="<%= student.attendance %>" readonly>
+              </div>
+              <div class="calc-field">
+                <label>Total Held</label>
+                <input type="number" id="totalClassesHeld" value="40" oninput="calculateAttendanceWhatIf()">
+              </div>
+              <div class="calc-field">
+                <label>Classes to Attend</label>
+                <input type="number" id="additionalClassesToAttend" value="8" min="0" max="50" oninput="calculateAttendanceWhatIf()">
+              </div>
+            </div>
+            <div class="calc-result">
+              <span>Projected Attendance:</span>
+              <div>
+                <strong id="projectedAttendanceResult">89%</strong>
+                <small id="attendanceDelta" style="display: block; font-size: 10px; color: var(--success); text-align: right;">+2% change</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Test Marks Simulation -->
+          <div class="calc-card" style="margin-bottom: 0;">
+            <div class="calc-title">
+              <span>📊</span> Test Score Projection
+            </div>
+            <div class="calc-desc">Estimate your revised average if you score in the next test:</div>
+            <div class="calc-inputs">
+              <div class="calc-field">
+                <label>Current Average</label>
+                <input type="number" id="currentMarksAvg" value="<%= academicHealth.breakdown.marks %>" readonly>
+              </div>
+              <div class="calc-field">
+                <label>Exams Taken</label>
+                <input type="number" id="examsConducted" value="5" oninput="calculateMarksWhatIf()">
+              </div>
+              <div class="calc-field">
+                <label>Next Test Score (out of 100)</label>
+                <input type="number" id="projectedNextScore" value="95" min="0" max="100" oninput="calculateMarksWhatIf()">
+              </div>
+            </div>
+            <div class="calc-result">
+              <span>Projected Course Average:</span>
+              <div>
+                <strong id="projectedMarksResult">88.5 / 100</strong>
+                <small id="marksDelta" style="display: block; font-size: 10px; color: var(--primary); text-align: right;">+2.5 pts change</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. ACADEMIC PERFORMANCE CHART & UPCOMING SCHEDULE -->
+      <div class="dashboard-columns two-col-70-30" style="margin-bottom: 24px;">
+        <!-- Performance Bar Chart -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ASSESSMENT PERFORMANCE</p>
+              <h2>Subject-wise Marks & Scores</h2>
+              <p>Continuous internal assessments across current curriculum</p>
+            </div>
+            <a href="/marks" class="small-btn">Full Gradebook →</a>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+            <% subjects.forEach(s => { %>
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                  <div>
+                    <strong style="color: var(--navy);"><%= s.name %></strong>
+                    <span style="color: var(--text-muted); font-size: 11px; margin-left: 6px;">(<%= s.code %>)</span>
+                  </div>
+                  <div style="font-weight: 700; color: <%= s.marks >= 75 ? 'var(--primary)' : 'var(--warning)' %>;">
+                    <%= s.marks %> / <%= s.max %>
+                  </div>
+                </div>
+                <div class="progress-track" style="height: 8px;">
+                  <div class="progress-fill <%= s.marks >= 80 ? '' : s.marks >= 60 ? 'amber' : 'red' %>" style="width: <%= (s.marks / s.max) * 100 %>%;"></div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+
+        <!-- Upcoming Classes Schedule -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">DAILY SCHEDULE</p>
+              <h2>Upcoming Classes</h2>
+              <p>Next scheduled classroom & lab sessions</p>
+            </div>
+            <a href="/timetable" class="small-btn">Timetable →</a>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <% timetable.slice(0, 4).forEach(t => { %>
+              <div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background-color: var(--surface-alt);">
+                <div style="min-width: 60px; text-align: center; border-right: 1px solid var(--border); padding-right: 10px;">
+                  <strong style="font-size: 12px; color: var(--primary); display: block;"><%= t.time.split(' ')[0] %></strong>
+                  <small style="font-size: 9px; color: var(--text-muted);"><%= t.time.split(' ')[1] %></small>
+                </div>
+                <div style="flex: 1;">
+                  <strong style="display: block; font-size: 12px; color: var(--navy);"><%= t.subject %></strong>
+                  <span style="display: block; font-size: 11px; color: var(--text-muted);">📍 <%= t.room %> • <%= t.day %></span>
+                </div>
+                <span class="badge primary"><%= t.code %></span>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. SMART TASK LIST & MY STUDY PLAN -->
+      <div class="dashboard-columns two-col-50-50" style="margin-bottom: 24px;">
+        <!-- Deadline Priority Task Management -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">TASK MANAGEMENT</p>
+              <h2>Deadline Priority & Assignments</h2>
+              <p>Action items categorized by immediate urgency</p>
+            </div>
+            <a href="/assignments" class="small-btn">All Tasks (<%= assignments.length %>) →</a>
+          </div>
+
+          <!-- Urgent Tasks -->
+          <% if (priorityTasks.urgent.length > 0) { %>
+            <div class="task-group-title" style="color: var(--danger);">
+              <span>🚨</span> Urgent (Due within 48 hours)
+            </div>
+            <% priorityTasks.urgent.forEach(task => { %>
+              <div class="task-item urgent">
+                <div class="task-left">
+                  <div class="task-info">
+                    <strong><%= task.title %></strong>
+                    <span><%= task.subject %> • Due <%= task.due %> (<%= task.label %>)</span>
+                  </div>
+                </div>
+                <div class="task-right">
+                  <form action="/assignments/<%= task.id %>/submit" method="POST" style="display: inline;">
+                    <button type="submit" class="small-btn">Submit Now</button>
+                  </form>
+                </div>
+              </div>
+            <% }) %>
+          <% } %>
+
+          <!-- Upcoming Tasks -->
+          <% if (priorityTasks.upcoming.length > 0) { %>
+            <div class="task-group-title" style="color: var(--warning);">
+              <span>⏰</span> Upcoming (Due in 3–5 Days)
+            </div>
+            <% priorityTasks.upcoming.forEach(task => { %>
+              <div class="task-item upcoming">
+                <div class="task-left">
+                  <div class="task-info">
+                    <strong><%= task.title %></strong>
+                    <span><%= task.subject %> • Due <%= task.due %></span>
+                  </div>
+                </div>
+                <div class="task-right">
+                  <span class="badge important"><%= task.label %></span>
+                  <form action="/assignments/<%= task.id %>/submit" method="POST" style="display: inline;">
+                    <button type="submit" class="small-btn">Submit</button>
+                  </form>
+                </div>
+              </div>
+            <% }) %>
+          <% } %>
+
+          <!-- Later Tasks -->
+          <% if (priorityTasks.later.length > 0) { %>
+            <div class="task-group-title">
+              <span>📅</span> Later Tasks
+            </div>
+            <% priorityTasks.later.slice(0, 2).forEach(task => { %>
+              <div class="task-item later">
+                <div class="task-left">
+                  <div class="task-info">
+                    <strong><%= task.title %></strong>
+                    <span><%= task.subject %> • Due <%= task.due %></span>
+                  </div>
+                </div>
+                <div class="task-right">
+                  <span class="badge"><%= task.label %></span>
+                </div>
+              </div>
+            <% }) %>
+          <% } %>
+        </div>
+
+        <!-- My Study Plan Section -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">WEEKLY ROADMAP</p>
+              <h2>My Study Plan</h2>
+              <p>Practical study routines structured around course assessments</p>
+            </div>
+            <span class="badge primary">Syllabus-Aligned</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <% studyPlan.slice(0, 4).forEach(daySchedule => { %>
+              <div class="study-day-card">
+                <div class="study-day-head">
+                  <strong><%= daySchedule.day %></strong>
+                  <span class="badge"><%= daySchedule.slots.length %> Study Slots</span>
+                </div>
+                <% daySchedule.slots.forEach(slot => { %>
+                  <div class="study-slot">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <div class="time"><%= slot.time %></div>
+                      <span class="badge <%= slot.tag === 'Exam Focus' ? 'urgent' : 'primary' %>" style="font-size: 9px; padding: 1px 6px;"><%= slot.tag %></span>
+                    </div>
+                    <strong><%= slot.subject %></strong>
+                    <p><%= slot.topic %></p>
+                  </div>
+                <% }) %>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. CAREER / SKILL READINESS PROGRESS -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">CAREER & INDUSTRY PREPARATION</p>
+            <h2>Technical Skill Proficiency & Readiness</h2>
+            <p>Industry competencies mapped to Data Science & Software Engineering tracks</p>
+          </div>
+          <span class="badge normal">Placement Ready</span>
+        </div>
+
+        <div class="skill-grid">
+          <% skills.forEach(skill => { %>
+            <div class="skill-card">
+              <div class="skill-header">
+                <div>
+                  <strong><%= skill.name %></strong>
+                  <span style="font-size: 10px; color: var(--text-muted); margin-left: 6px;">[<%= skill.category %>]</span>
+                </div>
+                <div class="skill-level-badge"><%= skill.level %></div>
+              </div>
+              <div class="progress-track" style="height: 6px; margin: 8px 0;">
+                <div class="progress-fill <%= skill.progress >= 85 ? 'green' : '' %>" style="width: <%= skill.progress %>%;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="skill-milestone">📍 <%= skill.milestone %></div>
+                <span style="font-size: 11px; font-weight: 700; color: var(--navy);"><%= skill.progress %>%</span>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- 7. CAMPUS LIFE & ACADEMIC HIGHLIGHTS GALLERY -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">CAMPUS EXPERIENCES</p>
+            <h2>Academic & Campus Life Showcase</h2>
+            <p>Laboratories, research facilities, seminars, and collaborative student spaces</p>
+          </div>
+          <a href="/notices" class="small-btn">Campus Updates →</a>
+        </div>
+
+        <div class="campus-gallery">
+          <!-- Library -->
+          <div class="gallery-card">
+            <div class="gallery-img-wrap">
+              <img src="/images/library.jpg" alt="MIT Central Library">
+              <span class="gallery-tag">Learning Commons</span>
+            </div>
+            <div class="gallery-body">
+              <strong>Central Library & IEEE Portal</strong>
+              <p>Quiet study pods, 50,000+ technical volumes, and 24/7 digital journal subscriptions.</p>
+            </div>
+          </div>
+
+          <!-- Computer Lab -->
+          <div class="gallery-card">
+            <div class="gallery-img-wrap">
+              <img src="/images/lab-computer.jpg" alt="Computer & Data Science Lab">
+              <span class="gallery-tag">Computing Lab</span>
+            </div>
+            <div class="gallery-body">
+              <strong>Data Science & AI Labs</strong>
+              <p>High-performance workstations dedicated to neural network training and parallel algorithms.</p>
+            </div>
+          </div>
+
+          <!-- Robotics & Innovation -->
+          <div class="gallery-card">
+            <div class="gallery-img-wrap">
+              <img src="/images/robotics-lab.jpg" alt="Engineering Innovation Workshop">
+              <span class="gallery-tag">Maker Space</span>
+            </div>
+            <div class="gallery-body">
+              <strong>Robotics & IoT Innovation Hub</strong>
+              <p>State-of-the-art microcontrollers, 3D rapid prototyping, and embedded systems hardware.</p>
+            </div>
+          </div>
+
+          <!-- Seminar & Symposium -->
+          <div class="gallery-card">
+            <div class="gallery-img-wrap">
+              <img src="/images/seminar.jpg" alt="Campus Auditorium">
+              <span class="gallery-tag">Auditorium</span>
+            </div>
+            <div class="gallery-body">
+              <strong>National Tech Symposiums</strong>
+              <p>Expert keynotes by industry researchers, alumni colloquiums, and technical hackathons.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. RECENT NOTICES & ANNOUNCEMENTS -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">OFFICIAL ANNOUNCEMENTS</p>
+            <h2>Recent Notices & Bulletins</h2>
+            <p>Important administrative, academic, and event announcements</p>
+          </div>
+          <a href="/notices" class="small-btn">View All Notices →</a>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <% notices.slice(0, 3).forEach(n => { %>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background-color: var(--surface);">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 36px; height: 36px; border-radius: var(--radius-sm); background-color: var(--surface-alt); display: grid; place-items: center; font-size: 16px;">
+                  <%= n.icon || '📢' %>
+                </div>
+                <div>
+                  <strong style="font-size: 13px; color: var(--navy); display: block;"><%= n.title %></strong>
+                  <span style="font-size: 11px; color: var(--text-muted);"><%= n.type %> • <%= n.date %> • Posted by <%= n.author || 'Academic Office' %></span>
+                </div>
+              </div>
+              <span class="badge <%= n.priority === 'Urgent' ? 'urgent' : n.priority === 'Important' ? 'important' : 'normal' %>">
+                <%= n.priority || 'Normal' %>
+              </span>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Notification Modal (Preserved) -->
+  <div class="modal <%= showPopup ? 'show' : '' %>" id="notificationModal">
+    <div class="modal-backdrop" onclick="closeNotifications()"></div>
+    <div class="modal-card">
+      <div class="modal-card-head">
+        <div>
+          <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">INSTITUTIONAL ALERTS</p>
+          <h2>Notifications & Updates</h2>
+          <p class="subtitle">Latest updates requiring your attention</p>
+        </div>
+        <button class="modal-close" onclick="closeNotifications()">×</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; margin: 16px 0;">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background-color: var(--surface-alt);">
+          <span style="font-size: 20px;">📝</span>
+          <div style="flex: 1;">
+            <strong style="display: block; font-size: 12px; color: var(--navy);">Internal Assessment Schedule Published</strong>
+            <small style="color: var(--text-muted); font-size: 10px;">Semester IV Mid-term exams start Sep 24</small>
+          </div>
+          <span class="badge urgent">URGENT</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background-color: var(--surface-alt);">
+          <span style="font-size: 20px;">⏰</span>
+          <div style="flex: 1;">
+            <strong style="display: block; font-size: 12px; color: var(--navy);">2 Assignments Due within 48 Hours</strong>
+            <small style="color: var(--text-muted); font-size: 10px;">DAA Huffman Coding & DBMS Normalization</small>
+          </div>
+          <span class="badge important">ACTION</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background-color: var(--surface-alt);">
+          <span style="font-size: 20px;">💡</span>
+          <div style="flex: 1;">
+            <strong style="display: block; font-size: 12px; color: var(--navy);">National Hackathon Final Registrations</strong>
+            <small style="color: var(--text-muted); font-size: 10px;">Submit project abstract before Friday</small>
+          </div>
+          <span class="badge normal">NEW</span>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="secondary-btn" onclick="closeNotifications()">Dismiss</button>
+        <a href="/notices" class="primary-btn" onclick="closeNotifications()">View Notices</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/script.js"></script>
+  <script>
+    // Initialize default calculations
+    document.addEventListener("DOMContentLoaded", function() {
+      calculateAttendanceWhatIf();
+      calculateMarksWhatIf();
+    });
+  </script>
+</body>
+</html>

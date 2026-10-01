@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>At-Risk Student Detection | Faculty</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "at-risk" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow" style="color: var(--danger);">ACADEMIC DIAGNOSTICS</p>
+          <h1>At-Risk Student Early Warning Detection</h1>
+          <p class="subtitle">Multi-factor academic performance indicator based on attendance thresholds, continuous evaluation scores, and pending submissions</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="/teacher/interventions" class="secondary-btn">Intervention Registry →</a>
+        </div>
+      </div>
+
+      <!-- Compliance Disclaimer -->
+      <div style="background-color: var(--info-bg); border: 1px solid var(--info-border); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 24px; font-size: 12px; color: var(--info); display: flex; align-items: flex-start; gap: 10px;">
+        <span style="font-size: 16px;">ℹ</span>
+        <div>
+          <strong>Institutional Academic Notice:</strong> This module is exclusively an objective academic performance metric based on empirical classroom attendance records, internal test marks, and assignment completion. It does not constitute a clinical, medical, or psychological diagnosis.
+        </div>
+      </div>
+
+      <!-- Risk Category Summary -->
+      <div class="stats-grid">
+        <div class="stat-card" style="border-left: 3px solid var(--danger);">
+          <div class="stat-icon-wrap rose">🚨</div>
+          <div class="stat-info">
+            <span>Critical Attention</span>
+            <strong><%= atRiskList.filter(s => s.riskLevel === 'HIGH RISK').length %></strong>
+            <small><b style="color: var(--danger);">HIGH RISK</b> • Immediate action</small>
+          </div>
+        </div>
+
+        <div class="stat-card" style="border-left: 3px solid var(--warning);">
+          <div class="stat-icon-wrap amber">⚠️</div>
+          <div class="stat-info">
+            <span>Moderate Concern</span>
+            <strong><%= atRiskList.filter(s => s.riskLevel === 'MEDIUM RISK').length %></strong>
+            <small><b style="color: var(--warning);">MEDIUM RISK</b> • Monitored</small>
+          </div>
+        </div>
+
+        <div class="stat-card" style="border-left: 3px solid var(--success);">
+          <div class="stat-icon-wrap green">✓</div>
+          <div class="stat-info">
+            <span>Good Academic Standing</span>
+            <strong><%= atRiskList.filter(s => s.riskLevel === 'LOW RISK').length %></strong>
+            <small><b>LOW RISK</b> • Compliant</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap blue">📋</div>
+          <div class="stat-info">
+            <span>Logged Interventions</span>
+            <strong><%= interventions.length %></strong>
+            <small><b><%= interventions.filter(i => i.status === 'Completed').length %> Resolved</b></small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filterable Student Risk Roster -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">STUDENT DIAGNOSTIC MATRIX</p>
+            <h2>Department Academic Risk Cohort</h2>
+            <p>Review flagged student risk scores and trigger mentoring actions</p>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="table-filter-bar">
+            <div class="table-search">
+              <span>🔍</span>
+              <input type="text" id="riskSearch" placeholder="Search by student or roll..." onkeyup="filterTable('riskSearch', 'riskTable')">
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="small-btn" onclick="filterRiskLevel('ALL')">All (<%= atRiskList.length %>)</button>
+              <button class="small-btn" style="color: var(--danger); border-color: var(--danger-border);" onclick="filterRiskLevel('HIGH RISK')">High Risk</button>
+              <button class="small-btn" style="color: var(--warning); border-color: var(--warning-border);" onclick="filterRiskLevel('MEDIUM RISK')">Medium Risk</button>
+            </div>
+          </div>
+
+          <table id="riskTable">
+            <thead>
+              <tr>
+                <th>Student Identity</th>
+                <th>Roll Number</th>
+                <th>Overall Attendance</th>
+                <th>Average Marks</th>
+                <th>CGPA</th>
+                <th>Risk Status</th>
+                <th>Diagnostic Factors</th>
+                <th>Faculty Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% atRiskList.forEach(s => { %>
+                <tr data-risk="<%= s.riskLevel %>">
+                  <td>
+                    <strong><%= s.name %></strong>
+                    <small><%= s.email %></small>
+                  </td>
+                  <td><%= s.rollNo %></td>
+                  <td>
+                    <strong style="color: <%= s.avgAttendance < 75 ? 'var(--danger)' : 'var(--success)' %>;">
+                      <%= s.avgAttendance %>%
+                    </strong>
+                  </td>
+                  <td>
+                    <strong style="color: <%= s.avgMarks < 60 ? 'var(--danger)' : 'var(--navy)' %>;">
+                      <%= s.avgMarks %> / 100
+                    </strong>
+                  </td>
+                  <td><%= Number(s.cgpa).toFixed(2) %></td>
+                  <td>
+                    <span class="badge <%= s.riskLevel === 'HIGH RISK' ? 'urgent' : s.riskLevel === 'MEDIUM RISK' ? 'important' : 'normal' %>">
+                      <%= s.riskLevel %>
+                    </span>
+                  </td>
+                  <td>
+                    <% if (s.factors.length > 0) { %>
+                      <div style="display: flex; gap: 4px; flex-direction: column;">
+                        <% s.factors.forEach(f => { %>
+                          <span style="font-size: 10px; color: var(--danger); font-weight: 500;">• <%= f %></span>
+                        <% }) %>
+                      </div>
+                    <% } else { %>
+                      <span style="font-size: 11px; color: var(--success);">Satisfactory Progress</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <div class="action-row">
+                      <a href="/teacher/students/<%= s.id %>/profile" class="primary-btn" style="padding: 5px 10px; font-size: 11px;">
+                        View Student
+                      </a>
+                      <a href="/teacher/interventions" class="secondary-btn" style="padding: 5px 10px; font-size: 11px;" title="Record Faculty Intervention">
+                        + Note
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+  <script>
+    function filterRiskLevel(level) {
+      const rows = document.querySelectorAll("#riskTable tbody tr");
+      rows.forEach(r => {
+        if (level === 'ALL' || r.getAttribute('data-risk') === level) {
+          r.style.display = '';
+        } else {
+          r.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

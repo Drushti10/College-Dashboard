@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Marks & Assessments | Faculty</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "marks" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">ACADEMIC EVALUATION</p>
+          <h1>Marks & Assessment Management</h1>
+          <p class="subtitle">Enter, update, and manage continuous evaluation grades and examination results</p>
+        </div>
+        <div>
+          <button class="primary-btn" onclick="openTeacherEdit('addMarksModal')">+ Enter New Marks</button>
+        </div>
+      </div>
+
+      <% if (message) { %>
+        <div class="success-banner">
+          <span>✓</span> <%= message %>
+        </div>
+      <% } %>
+
+      <!-- Marks Roster Table -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ASSESSMENT ARCHIVE</p>
+            <h2>Student Evaluation Records</h2>
+            <p><%= marks.length %> individual performance records logged</p>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="table-filter-bar">
+            <div class="table-search">
+              <span>🔍</span>
+              <input type="text" id="marksSearch" placeholder="Filter by student, subject, code..." onkeyup="filterTable('marksSearch', 'marksTable')">
+            </div>
+            <span style="font-size: 11px; color: var(--text-muted);"><%= marks.length %> Records Displayed</span>
+          </div>
+
+          <table id="marksTable">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Subject Name</th>
+                <th>Code</th>
+                <th>Score</th>
+                <th>Percentage</th>
+                <th>Performance Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% marks.forEach(m => { 
+                const s = students.find(x => Number(x.id) === Number(m.studentId));
+                const pct = Math.round((Number(m.marks) / Number(m.max || 100)) * 100);
+              %>
+                <tr>
+                  <td>
+                    <strong><%= s ? s.name : 'Unknown Candidate' %></strong>
+                    <small><%= s ? s.rollNo : '' %></small>
+                  </td>
+                  <td><%= m.subject %></td>
+                  <td><span class="badge primary"><%= m.code %></span></td>
+                  <td><strong><%= m.marks %></strong> / <%= m.max || 100 %></td>
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <div class="progress-track" style="width: 80px;">
+                        <div class="progress-fill <%= pct >= 75 ? 'green' : pct >= 50 ? '' : 'red' %>" style="width: <%= pct %>%;"></div>
+                      </div>
+                      <b><%= pct %>%</b>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge <%= pct >= 75 ? 'normal' : pct >= 50 ? 'important' : 'urgent' %>">
+                      <%= pct >= 75 ? 'Proficient' : pct >= 50 ? 'Average' : 'Remedial Needed' %>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="action-row">
+                      <button class="small-btn" onclick="openTeacherEdit('edit-mark-<%= m.id %>')">Edit</button>
+                      <form method="POST" action="/teacher/marks/<%= m.id %>/delete" onsubmit="return confirm('Delete this mark entry?');" style="display: inline;">
+                        <button type="submit" class="danger-btn">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add Marks Modal -->
+  <div class="modal" id="addMarksModal">
+    <div class="modal-backdrop" onclick="closeTeacherEdit('addMarksModal')"></div>
+    <div class="modal-card">
+      <div class="modal-card-head">
+        <div>
+          <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ASSESSMENT ENTRY</p>
+          <h2>Log Subject Assessment Marks</h2>
+        </div>
+        <button class="modal-close" onclick="closeTeacherEdit('addMarksModal')">×</button>
+      </div>
+
+      <form method="POST" action="/teacher/marks" class="crud-form">
+        <label>Select Student</label>
+        <select name="studentId" required>
+          <% students.forEach(s => { %>
+            <option value="<%= s.id %>"><%= s.name %> — <%= s.rollNo %></option>
+          <% }) %>
+        </select>
+
+        <label>Subject Full Name</label>
+        <input name="subject" placeholder="e.g. Database Management Systems" required>
+
+        <div class="form-two">
+          <div>
+            <label>Subject Code</label>
+            <input name="code" placeholder="e.g. DBMS" required>
+          </div>
+          <div>
+            <label>Score Obtained</label>
+            <input name="marks" type="number" min="0" max="100" placeholder="85" required>
+          </div>
+        </div>
+
+        <div>
+          <label>Maximum Marks</label>
+          <input name="max" type="number" min="1" value="100" required>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+          <button type="button" class="secondary-btn" onclick="closeTeacherEdit('addMarksModal')">Cancel</button>
+          <button class="primary-btn" type="submit">Record Marks</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Marks Modals -->
+  <% marks.forEach(m => { %>
+    <div class="modal" id="edit-mark-<%= m.id %>">
+      <div class="modal-backdrop" onclick="closeTeacherEdit('edit-mark-<%= m.id %>')"></div>
+      <div class="modal-card">
+        <div class="modal-card-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">UPDATE MARKS</p>
+            <h2>Edit Evaluation Entry</h2>
+          </div>
+          <button class="modal-close" onclick="closeTeacherEdit('edit-mark-<%= m.id %>')">×</button>
+        </div>
+
+        <form method="POST" action="/teacher/marks/<%= m.id %>/update" class="crud-form">
+          <label>Student</label>
+          <select name="studentId">
+            <% students.forEach(s => { %>
+              <option value="<%= s.id %>" <%= Number(s.id) === Number(m.studentId) ? 'selected' : '' %>>
+                <%= s.name %> — <%= s.rollNo %>
+              </option>
+            <% }) %>
+          </select>
+
+          <label>Subject</label>
+          <input name="subject" value="<%= m.subject %>" required>
+
+          <div class="form-two">
+            <div>
+              <label>Subject Code</label>
+              <input name="code" value="<%= m.code %>" required>
+            </div>
+            <div>
+              <label>Score</label>
+              <input name="marks" type="number" min="0" value="<%= m.marks %>" required>
+            </div>
+          </div>
+
+          <div>
+            <label>Max Marks</label>
+            <input name="max" type="number" min="1" value="<%= m.max || 100 %>">
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+            <button type="button" class="secondary-btn" onclick="closeTeacherEdit('edit-mark-<%= m.id %>')">Cancel</button>
+            <button class="primary-btn" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

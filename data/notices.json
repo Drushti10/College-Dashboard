@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "title": "Internal Assessment Test II Schedule Released",
+    "message": "Mid-semester examination timetable for Semester IV has been finalized. Assessments will commence from September 24, 2026. Hall tickets will be issued digitally.",
+    "date": "2026-09-08",
+    "type": "Academic",
+    "priority": "Urgent",
+    "icon": "📝",
+    "author": "Academic Office"
+  },
+  {
+    "id": 2,
+    "title": "National Hackathon 2026 — Final Round Registrations",
+    "message": "Annual 36-hour Hackathon registrations close this Friday. Teams of 4 with functional prototype blueprints are eligible for mentorship tracks by industry partners.",
+    "date": "2026-09-06",
+    "type": "Event",
+    "priority": "Important",
+    "icon": "💡",
+    "author": "Innovation & Incubation Cell"
+  },
+  {
+    "id": 3,
+    "title": "Campus Placement Drive: Cloud & AI Engineering Roles",
+    "message": "Pre-placement talks and technical aptitude evaluations for 3rd and 4th-year students start next Tuesday in the Central Auditorium.",
+    "date": "2026-09-05",
+    "type": "Placement",
+    "priority": "Important",
+    "icon": "💼",
+    "author": "Training & Placement Cell"
+  },
+  {
+    "id": 4,
+    "title": "Central Library Digital Access & IEEE Xplore Journals",
+    "message": "Off-campus proxy access credentials for IEEE, ACM Digital Library, and Springer journals have been updated for the current academic session.",
+    "date": "2026-09-03",
+    "type": "Library",
+    "priority": "Normal",
+    "icon": "📚",
+    "author": "Library Committee"
+  },
+  {
+    "id": 5,
+    "title": "Symposium on Deep Learning & Generative AI",
+    "message": "Distinguished faculty talk on Transformer Architectures and Multimodal LLMs will be hosted in Seminar Hall A at 3:00 PM this Friday.",
+    "date": "2026-09-01",
+    "type": "Event",
+    "priority": "Normal",
+    "icon": "🎓",
+    "author": "Department of Computer Engineering"
+  }
+]

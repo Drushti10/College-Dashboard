@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notices & Announcements | MIT Academy</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/student-nav", { active: "notices" }) %>
+
+  <main class="main">
+    <%- include("../partials/student-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">INSTITUTIONAL BULLETINS</p>
+          <h1>Official Notices & Announcements</h1>
+          <p class="subtitle">Deanery of Academics, Examination Cell, Training & Placement, and Student Affairs</p>
+        </div>
+        <div>
+          <span class="badge primary" style="font-size: 12px; padding: 6px 12px;"><%= notices.length %> Active Bulletins</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <% notices.forEach(n => { %>
+          <div class="panel" style="margin-bottom: 0; padding: 20px; display: flex; gap: 20px; align-items: flex-start;">
+            <div style="width: 46px; height: 46px; border-radius: var(--radius-sm); background-color: var(--surface-alt); display: grid; place-items: center; font-size: 22px; flex-shrink: 0;">
+              <%= n.icon || '📢' %>
+            </div>
+
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;">
+                <span class="badge <%= n.priority === 'Urgent' ? 'urgent' : n.priority === 'Important' ? 'important' : 'normal' %>">
+                  <%= n.priority || 'Normal' %>
+                </span>
+                <span class="badge primary"><%= n.type %></span>
+                <span style="font-size: 11px; color: var(--text-muted);">Posted on: <%= n.date %></span>
+                <span style="font-size: 11px; color: var(--text-muted);">• Origin: <b><%= n.author || 'Academic Office' %></b></span>
+              </div>
+
+              <h2 style="font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 6px;"><%= n.title %></h2>
+              <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;"><%= n.message %></p>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Campus Life Events Spotlight with Photos -->
+      <div class="panel" style="margin-top: 24px;">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">CAMPUS EVENTS SPOTLIGHT</p>
+            <h2>Academic Events & Technical Symposiums</h2>
+            <p>Visual highlights of recent hackathons, research colloquiums, and industry guest lectures</p>
+          </div>
+        </div>
+
+        <div class="campus-gallery" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="gallery-card">
+            <div class="gallery-img-wrap">
+              <img src="/images/seminar.jpg" alt="Generative AI Seminar">
+              <span class="gallery-tag">Symposium</span>
+            </div>
+            <div class="gallery-body">
+              <strong>Annual AI & Cloud Summit</strong>
+              <p>Keynote lectures by distinguished industry architects from leading tech hubs.</p>
+            </div>
+          </div>
+
+          <div class="gallery-card">
+            <div class="gallery-img-wrap">
+              <img src="/images/campus-collab.jpg" alt="Hackathon Sprint">
+              <span class="gallery-tag">Hackathon</span>
+            </div>
+            <div class="gallery-body">
+              <strong>36-Hour National Hackathon</strong>
+              <p>Teams build deployable AI models and IoT sensor grids in the central commons.</p>
+            </div>
+          </div>
+
+          <div class="gallery-card">
+            <div class="gallery-img-wrap">
+              <img src="/images/sports-campus.jpg" alt="Sports & Cultural Week">
+              <span class="gallery-tag">Student Affairs</span>
+            </div>
+            <div class="gallery-body">
+              <strong>Inter-Collegiate Sports Meet</strong>
+              <p>Annual athletic competitions, football tournaments, and university sports league.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

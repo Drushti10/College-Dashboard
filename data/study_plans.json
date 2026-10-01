@@ -1,0 +1,46 @@
+{
+  "1": [
+    {
+      "day": "Monday",
+      "slots": [
+        { "time": "05:00 PM – 06:15 PM", "subject": "DBMS Revision", "topic": "B-Trees, Query Optimizer & Normalization", "tag": "Exam Focus", "completed": true },
+        { "time": "06:30 PM – 07:45 PM", "subject": "DSA Practice", "topic": "LeetCode Graph Traversal & AVL Balancing", "tag": "Coding Practice", "completed": false }
+      ]
+    },
+    {
+      "day": "Tuesday",
+      "slots": [
+        { "time": "05:00 PM – 06:30 PM", "subject": "Machine Learning", "topic": "Backpropagation & CNN Layer Architectures", "tag": "Lab Prep", "completed": true },
+        { "time": "07:00 PM – 08:00 PM", "subject": "Assignment Work", "topic": "DAA Huffman Coding Report & C++ Implementation", "tag": "Deadline", "completed": false }
+      ]
+    },
+    {
+      "day": "Wednesday",
+      "slots": [
+        { "time": "05:30 PM – 06:45 PM", "subject": "Design & Analysis of Algorithms", "topic": "Dynamic Programming (Knapsack & LCS)", "tag": "Core Theory", "completed": false },
+        { "time": "07:00 PM – 08:00 PM", "subject": "Computer Networks", "topic": "TCP Congestion Control & Socket Programming", "tag": "Lab Practice", "completed": false }
+      ]
+    },
+    {
+      "day": "Thursday",
+      "slots": [
+        { "time": "05:00 PM – 06:30 PM", "subject": "Software Engineering", "topic": "UML Sequence Diagrams & Microservice Architecture", "tag": "Project Work", "completed": false },
+        { "time": "07:00 PM – 08:15 PM", "subject": "DBMS Lab Practice", "topic": "PostgreSQL Query Plan Tuning (EXPLAIN ANALYZE)", "tag": "Hands-on", "completed": false }
+      ]
+    },
+    {
+      "day": "Friday",
+      "slots": [
+        { "time": "05:00 PM – 06:30 PM", "subject": "Weak Subject Focus (CN)", "topic": "Subnet Masking & CIDR Routing Table Analysis", "tag": "Targeted Review", "completed": false },
+        { "time": "07:00 PM – 08:00 PM", "subject": "Weekly Mock Test", "topic": "Timed 30-min Multiple Choice Revision", "tag": "Self Assessment", "completed": false }
+      ]
+    },
+    {
+      "day": "Saturday",
+      "slots": [
+        { "time": "10:00 AM – 12:30 PM", "subject": "Capstone Project & GitHub", "topic": "Full-stack module integration & unit testing", "tag": "Portfolio", "completed": false },
+        { "time": "04:00 PM – 05:30 PM", "subject": "DSA Competitive Programming", "topic": "Contest simulation on Codeforces/LeetCode", "tag": "Skill Building", "completed": false }
+      ]
+    }
+  ]
+}

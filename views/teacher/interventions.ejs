@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Intervention Registry | MIT Academy</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "interventions" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">STUDENT MENTORING</p>
+          <h1>Faculty Intervention & Counseling Registry</h1>
+          <p class="subtitle">Record, monitor, and resolve individualized academic guidance and attendance counseling actions</p>
+        </div>
+        <div>
+          <button class="primary-btn" onclick="openTeacherEdit('newInterventionModal')">+ Record New Intervention</button>
+        </div>
+      </div>
+
+      <% if (message) { %>
+        <div class="success-banner">
+          <span>✓</span> <%= message %>
+        </div>
+      <% } %>
+
+      <!-- Intervention Statistics Summary -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon-wrap blue">📋</div>
+          <div class="stat-info">
+            <span>Total Interventions</span>
+            <strong><%= interventions.length %></strong>
+            <small>Recorded this term</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap amber">⏳</div>
+          <div class="stat-info">
+            <span>Pending Follow-ups</span>
+            <strong><%= interventions.filter(i => i.status === 'Pending').length %></strong>
+            <small>Requires review</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap green">✓</div>
+          <div class="stat-info">
+            <span>Resolved / Completed</span>
+            <strong><%= interventions.filter(i => i.status === 'Completed').length %></strong>
+            <small>Remediation successful</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap purple">👥</div>
+          <div class="stat-info">
+            <span>Distinct Students</span>
+            <strong><%= new Set(interventions.map(i => i.studentId)).size %></strong>
+            <small>Mentored candidates</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interventions Roster Table -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">COUNSELING LOGS</p>
+            <h2>Recorded Faculty Mentoring Actions</h2>
+            <p>Chronological interventions stored for institutional record</p>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="table-filter-bar">
+            <div class="table-search">
+              <span>🔍</span>
+              <input type="text" id="interventionSearch" placeholder="Search by student or issue..." onkeyup="filterTable('interventionSearch', 'interventionTable')">
+            </div>
+            <span style="font-size: 11px; color: var(--text-muted);"><%= interventions.length %> Logs Tracked</span>
+          </div>
+
+          <table id="interventionTable">
+            <thead>
+              <tr>
+                <th>Student Identity</th>
+                <th>Academic Issue / Deficiency</th>
+                <th>Intervention Action Taken</th>
+                <th>Follow-up Date</th>
+                <th>Status</th>
+                <th>Faculty & Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% interventions.forEach(item => { %>
+                <tr>
+                  <td>
+                    <strong><%= item.studentName %></strong>
+                    <small><%= item.rollNo %></small>
+                  </td>
+                  <td>
+                    <strong style="color: var(--navy);"><%= item.issue %></strong>
+                  </td>
+                  <td>
+                    <span style="font-size: 12px; color: var(--text-muted);"><%= item.action %></span>
+                  </td>
+                  <td>
+                    <b><%= item.followUpDate || 'N/A' %></b>
+                  </td>
+                  <td>
+                    <span class="badge <%= item.status === 'Completed' ? 'normal' : 'important' %>">
+                      <%= item.status %>
+                    </span>
+                  </td>
+                  <td>
+                    <small><%= item.facultyName %></small>
+                    <small style="color: var(--text-subtle);"><%= item.createdDate %></small>
+                  </td>
+                  <td>
+                    <div class="action-row">
+                      <!-- Toggle Status -->
+                      <form action="/teacher/interventions/<%= item.id %>/status" method="POST" style="display: inline;">
+                        <button type="submit" class="small-btn" title="Toggle Status">
+                          <%= item.status === 'Completed' ? 'Reopen' : 'Resolve' %>
+                        </button>
+                      </form>
+
+                      <!-- Delete Intervention -->
+                      <form action="/teacher/interventions/<%= item.id %>/delete" method="POST" onsubmit="return confirm('Delete this intervention log?');" style="display: inline;">
+                        <button type="submit" class="danger-btn">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- New Intervention Modal -->
+  <div class="modal" id="newInterventionModal">
+    <div class="modal-backdrop" onclick="closeTeacherEdit('newInterventionModal')"></div>
+    <div class="modal-card">
+      <div class="modal-card-head">
+        <div>
+          <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">NEW RECORD</p>
+          <h2>Log Student Academic Intervention</h2>
+          <p class="subtitle">Document counseling guidance, attendance alerts, or remedial plans</p>
+        </div>
+        <button class="modal-close" onclick="closeTeacherEdit('newInterventionModal')">×</button>
+      </div>
+
+      <form action="/teacher/interventions" method="POST" class="crud-form">
+        <label>Select Target Student</label>
+        <select name="studentId" required>
+          <% students.forEach(s => { %>
+            <option value="<%= s.id %>"><%= s.name %> (<%= s.rollNo %>) — Att: <%= s.attendance %>%</option>
+          <% }) %>
+        </select>
+
+        <label>Observed Academic Issue / Deficit</label>
+        <input type="text" name="issue" placeholder="e.g. Low attendance in DBMS, missing lab assignments" required>
+
+        <label>Action Taken / Mentoring Plan</label>
+        <textarea name="action" placeholder="Detail the counseling recommendations, remedial assignment assigned, or parent notification..." required></textarea>
+
+        <div class="form-two">
+          <div>
+            <label>Follow-up Date</label>
+            <input type="date" name="followUpDate" value="2026-09-22" required>
+          </div>
+          <div>
+            <label>Initial Status</label>
+            <select name="status">
+              <option value="Pending">Pending Review</option>
+              <option value="Completed">Resolved</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+          <button type="button" class="secondary-btn" onclick="closeTeacherEdit('newInterventionModal')">Cancel</button>
+          <button type="submit" class="primary-btn">Record Intervention</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

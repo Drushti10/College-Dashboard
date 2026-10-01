@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Overview | MIT Academy</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/student-nav", { active: "attendance" }) %>
+
+  <main class="main">
+    <%- include("../partials/student-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">CURRICULUM ATTENDANCE</p>
+          <h1>Academic Attendance & Compliance</h1>
+          <p class="subtitle">Official university attendance records for Semester IV (SPPU 75% Mandatory Threshold)</p>
+        </div>
+        <span class="badge <%= student.attendance >= 75 ? 'normal' : 'urgent' %>" style="font-size: 12px; padding: 6px 12px;">
+          <%= student.attendance >= 75 ? '✓ 75% Requirement Met' : '⚠ Action Required: Attendance Shortage' %>
+        </span>
+      </div>
+
+      <!-- Overview Cards -->
+      <div class="dashboard-columns two-col-50-50" style="margin-bottom: 24px;">
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">SUMMARY</p>
+              <h2>Semester Compliance Standing</h2>
+              <p>Overall aggregate across all theoretical lectures & practical laboratories</p>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 24px; padding: 12px 0;">
+            <div style="width: 90px; height: 90px; border-radius: 50%; background: conic-gradient(var(--primary) calc(<%= student.attendance %> * 1%), var(--border) 0); display: grid; place-items: center;">
+              <div style="width: 72px; height: 72px; border-radius: 50%; background-color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <strong style="font-size: 20px; color: var(--navy);"><%= student.attendance %>%</strong>
+                <small style="font-size: 9px; color: var(--text-muted);">Aggregate</small>
+              </div>
+            </div>
+            <div>
+              <h3 style="font-size: 15px; font-weight: 700; color: var(--navy);">
+                <%= student.attendance >= 85 ? 'Excellent Attendance Regularity' : student.attendance >= 75 ? 'Good Standing (Eligible for Examinations)' : 'Critical Attendance Deficit' %>
+              </h3>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                <%= student.attendance >= 75 ? 'Your current attendance qualifies you unconditionally for end-semester assessments and internal evaluations.' : 'You must attend consecutive upcoming lectures to avoid academic detention warnings.' %>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendance What-If Tool -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">WHAT-IF SIMULATION</p>
+              <h2>Attendance Forecast Calculator</h2>
+              <p>Calculate your projected percentage if you attend next classes</p>
+            </div>
+            <span class="badge primary">Simulation</span>
+          </div>
+
+          <div class="calc-inputs">
+            <div class="calc-field">
+              <label>Current %</label>
+              <input type="number" id="currentAttendancePct" value="<%= student.attendance %>" readonly>
+            </div>
+            <div class="calc-field">
+              <label>Total Held</label>
+              <input type="number" id="totalClassesHeld" value="40" oninput="calculateAttendanceWhatIf()">
+            </div>
+            <div class="calc-field">
+              <label>Classes to Attend</label>
+              <input type="number" id="additionalClassesToAttend" value="8" min="0" max="50" oninput="calculateAttendanceWhatIf()">
+            </div>
+          </div>
+
+          <div class="calc-result">
+            <span>Projected Standing:</span>
+            <div>
+              <strong id="projectedAttendanceResult">89%</strong>
+              <small id="attendanceDelta" style="display: block; font-size: 10px; color: var(--success); text-align: right;">+2% change</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subject-Wise Attendance Breakdown Table -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">SUBJECT BREAKDOWN</p>
+            <h2>Course & Laboratory Attendance Records</h2>
+            <p>Individual course participation logged by respective faculty</p>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <table>
+            <thead>
+              <tr>
+                <th>Course Name</th>
+                <th>Course Code</th>
+                <th>Lectures Attended</th>
+                <th>Attendance Percentage</th>
+                <th>Institutional Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% subjects.forEach(s => { 
+                const attended = Math.round(24 * s.attendance / 100);
+              %>
+                <tr>
+                  <td>
+                    <strong><%= s.name %></strong>
+                  </td>
+                  <td>
+                    <span class="badge primary"><%= s.code %></span>
+                  </td>
+                  <td>
+                    <%= attended %> / 24 Conducted
+                  </td>
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div class="progress-track" style="width: 140px;">
+                        <div class="progress-fill <%= s.attendance >= 85 ? 'green' : s.attendance >= 75 ? '' : 'red' %>" style="width: <%= s.attendance %>%;"></div>
+                      </div>
+                      <strong style="font-size: 12px;"><%= s.attendance %>%</strong>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge <%= s.attendance >= 85 ? 'normal' : s.attendance >= 75 ? 'normal' : 'urgent' %>">
+                      <%= s.attendance >= 85 ? 'Excellent' : s.attendance >= 75 ? 'Compliant' : 'Shortage' %>
+                    </span>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      calculateAttendanceWhatIf();
+    });
+  </script>
+</body>
+</html>

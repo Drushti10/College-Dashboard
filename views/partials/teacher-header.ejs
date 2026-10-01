@@ -1,0 +1,24 @@
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="menu-btn" onclick="toggleSidebar()" aria-label="Toggle Menu">☰</button>
+    <div>
+      <span class="crumb">MIT Academy of Engineering</span>
+      <small>Faculty Academic Control Center • Department of Computer Engineering</small>
+    </div>
+  </div>
+
+  <div class="top-actions">
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" placeholder="Search students, roll no..." onkeydown="if(event.key==='Enter') window.location.href='/teacher/students';">
+    </div>
+
+    <div class="user-mini">
+      <div>
+        <strong><%= user.name %></strong>
+        <span><%= user.designation || 'Assistant Professor' %></span>
+      </div>
+      <div class="avatar small"><%= user.avatar || 'FC' %></div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Attendance | Faculty</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "attendance" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">ATTENDANCE ROSTER</p>
+          <h1>Course & Lab Attendance Management</h1>
+          <p class="subtitle">Record and maintain course lecture and practical attendance percentages</p>
+        </div>
+        <div>
+          <button class="primary-btn" onclick="openTeacherEdit('addAttendanceModal')">+ Record Attendance</button>
+        </div>
+      </div>
+
+      <% if (message) { %>
+        <div class="success-banner">
+          <span>✓</span> <%= message %>
+        </div>
+      <% } %>
+
+      <!-- Attendance Table Panel -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ATTENDANCE RECORDS</p>
+            <h2>Subject-wise Participation Logs</h2>
+            <p><%= attendance.length %> total course attendance records logged</p>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="table-filter-bar">
+            <div class="table-search">
+              <span>🔍</span>
+              <input type="text" id="attSearch" placeholder="Filter by student, subject..." onkeyup="filterTable('attSearch', 'attTable')">
+            </div>
+            <span style="font-size: 11px; color: var(--text-muted);"><%= attendance.length %> Records Displayed</span>
+          </div>
+
+          <table id="attTable">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Course Subject</th>
+                <th>Attendance Percentage</th>
+                <th>SPPU Compliance</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% attendance.forEach(a => { 
+                const s = students.find(x => Number(x.id) === Number(a.studentId));
+              %>
+                <tr>
+                  <td>
+                    <strong><%= s ? s.name : 'Unknown Student' %></strong>
+                    <small><%= s ? s.rollNo : '' %></small>
+                  </td>
+                  <td><%= a.subject %></td>
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div class="progress-track" style="width: 110px;">
+                        <div class="progress-fill <%= a.percentage >= 85 ? 'green' : a.percentage >= 75 ? '' : 'red' %>" style="width: <%= a.percentage %>%;"></div>
+                      </div>
+                      <strong style="font-size: 12px;"><%= a.percentage %>%</strong>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge <%= a.percentage >= 75 ? 'normal' : 'urgent' %>">
+                      <%= a.percentage >= 75 ? '✓ Compliant (>= 75%)' : '⚠ Deficit (< 75%)' %>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="action-row">
+                      <button class="small-btn" onclick="openTeacherEdit('edit-att-<%= a.id %>')">Edit</button>
+                      <form method="POST" action="/teacher/attendance/<%= a.id %>/delete" onsubmit="return confirm('Delete this attendance record?');" style="display: inline;">
+                        <button type="submit" class="danger-btn">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add Attendance Modal -->
+  <div class="modal" id="addAttendanceModal">
+    <div class="modal-backdrop" onclick="closeTeacherEdit('addAttendanceModal')"></div>
+    <div class="modal-card">
+      <div class="modal-card-head">
+        <div>
+          <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">RECORD PARTICIPATION</p>
+          <h2>Log Subject Attendance</h2>
+        </div>
+        <button class="modal-close" onclick="closeTeacherEdit('addAttendanceModal')">×</button>
+      </div>
+
+      <form method="POST" action="/teacher/attendance" class="crud-form">
+        <label>Select Student</label>
+        <select name="studentId" required>
+          <% students.forEach(s => { %>
+            <option value="<%= s.id %>"><%= s.name %> — <%= s.rollNo %></option>
+          <% }) %>
+        </select>
+
+        <label>Course / Subject Name</label>
+        <input name="subject" placeholder="e.g. Machine Learning" required>
+
+        <label>Attendance Percentage (0 - 100)</label>
+        <input name="percentage" type="number" min="0" max="100" placeholder="e.g. 88" required>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+          <button type="button" class="secondary-btn" onclick="closeTeacherEdit('addAttendanceModal')">Cancel</button>
+          <button class="primary-btn" type="submit">Save Attendance</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Attendance Modals -->
+  <% attendance.forEach(a => { %>
+    <div class="modal" id="edit-att-<%= a.id %>">
+      <div class="modal-backdrop" onclick="closeTeacherEdit('edit-att-<%= a.id %>')"></div>
+      <div class="modal-card">
+        <div class="modal-card-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">UPDATE RECORD</p>
+            <h2>Edit Attendance Entry</h2>
+          </div>
+          <button class="modal-close" onclick="closeTeacherEdit('edit-att-<%= a.id %>')">×</button>
+        </div>
+
+        <form method="POST" action="/teacher/attendance/<%= a.id %>/update" class="crud-form">
+          <label>Student</label>
+          <select name="studentId">
+            <% students.forEach(s => { %>
+              <option value="<%= s.id %>" <%= Number(s.id) === Number(a.studentId) ? 'selected' : '' %>>
+                <%= s.name %> — <%= s.rollNo %>
+              </option>
+            <% }) %>
+          </select>
+
+          <label>Course Subject</label>
+          <input name="subject" value="<%= a.subject %>" required>
+
+          <label>Attendance Percentage (%)</label>
+          <input name="percentage" type="number" min="0" max="100" value="<%= a.percentage %>" required>
+
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+            <button type="button" class="secondary-btn" onclick="closeTeacherEdit('edit-att-<%= a.id %>')">Cancel</button>
+            <button class="primary-btn" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

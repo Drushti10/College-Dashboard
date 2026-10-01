@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class Performance Intelligence | Faculty</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "analytics" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">FACULTY INTELLIGENCE</p>
+          <h1>Class Performance Intelligence</h1>
+          <p class="subtitle">Curriculum analytics, grade distribution, subject averages, and academic standing benchmarks</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="/teacher/at-risk" class="secondary-btn">At-Risk Diagnostic →</a>
+          <a href="/teacher/students" class="primary-btn">Manage Students</a>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon-wrap blue">👥</div>
+          <div class="stat-info">
+            <span>Class Strength</span>
+            <strong><%= analytics.totalStudents %></strong>
+            <small>Active Roster</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap purple">📊</div>
+          <div class="stat-info">
+            <span>Overall Marks Average</span>
+            <strong><%= analytics.classAvgMarks %> / 100</strong>
+            <small>Across all subjects</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap green">✓</div>
+          <div class="stat-info">
+            <span>Attendance Average</span>
+            <strong><%= analytics.avgAttendance %>%</strong>
+            <small>Threshold: 75% SPPU</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap amber">📈</div>
+          <div class="stat-info">
+            <span>Pass Percentage</span>
+            <strong><%= analytics.passPercentage %>%</strong>
+            <small>Passing mark >= 40</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="dashboard-columns two-col-50-50" style="margin-bottom: 24px;">
+        <!-- Subject Marks Bar Chart -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">SUBJECT COMPARISON</p>
+              <h2>Course Average Performance</h2>
+              <p>Mean scores achieved by students across core disciplines</p>
+            </div>
+          </div>
+
+          <div style="height: 260px; position: relative;">
+            <canvas id="subjectAvgChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Grade Distribution Chart -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">GRADE BANDS</p>
+              <h2>CGPA Distribution</h2>
+              <p>Student breakdown across academic achievement brackets</p>
+            </div>
+          </div>
+
+          <div style="height: 260px; position: relative;">
+            <canvas id="cgpaDistChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Performing Students & Needing Attention Columns -->
+      <div class="dashboard-columns two-col-50-50">
+        <!-- Top Performing Students -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--success);">DEAN'S MERIT LIST</p>
+              <h2>Top Performing Students</h2>
+              <p>Highest cumulative CGPA achievers in the department</p>
+            </div>
+            <span class="badge normal">Honor Roll</span>
+          </div>
+
+          <div class="table-panel">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Roll No.</th>
+                  <th>CGPA</th>
+                  <th>Attendance</th>
+                  <th>Profile</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% analytics.topStudents.forEach(s => { %>
+                  <tr>
+                    <td>
+                      <strong><%= s.name %></strong>
+                    </td>
+                    <td><%= s.rollNo %></td>
+                    <td>
+                      <strong style="color: var(--primary); font-size: 13px;"><%= Number(s.cgpa).toFixed(2) %></strong>
+                    </td>
+                    <td><%= s.attendance %>%</td>
+                    <td>
+                      <a href="/teacher/students/<%= s.id %>/profile" class="small-btn">View 360°</a>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Attendance Breakdown Brackets -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">REGULATORY MONITORING</p>
+              <h2>Attendance Cohort Summary</h2>
+              <p>Institutional tracking for examination eligibility</p>
+            </div>
+            <span class="badge primary">SPPU Guidelines</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                <strong style="color: var(--success);">High Regularity (> 85%)</strong>
+                <span><b><%= analytics.attendanceBrackets.above85 %></b> / <%= analytics.totalStudents %> Students</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill green" style="width: <%= (analytics.attendanceBrackets.above85 / analytics.totalStudents) * 100 %>%;"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                <strong style="color: var(--primary);">Standard Compliant (75% - 85%)</strong>
+                <span><b><%= analytics.attendanceBrackets.midRange %></b> / <%= analytics.totalStudents %> Students</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: <%= (analytics.attendanceBrackets.midRange / analytics.totalStudents) * 100 %>%;"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                <strong style="color: var(--danger);">Critical Shortage (< 75%)</strong>
+                <span><b><%= analytics.attendanceBrackets.below75 %></b> / <%= analytics.totalStudents %> Students</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill red" style="width: <%= (analytics.attendanceBrackets.below75 / analytics.totalStudents) * 100 %>%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; padding: 12px; background-color: var(--surface-alt); border-radius: var(--radius-sm); font-size: 11px; color: var(--text-muted);">
+            ℹ Notice: Students below 75% require faculty intervention counseling to become eligible for final semester examination hall tickets.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // 1. Subject Average Chart
+      const subCtx = document.getElementById('subjectAvgChart');
+      if (subCtx) {
+        const subData = <%- JSON.stringify(analytics.subjectAverages) %>;
+        new Chart(subCtx, {
+          type: 'bar',
+          data: {
+            labels: subData.map(s => s.code),
+            datasets: [{
+              label: 'Average Score',
+              data: subData.map(s => s.average),
+              backgroundColor: '#1d4ed8',
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { min: 0, max: 100 } },
+            plugins: { legend: { display: false } }
+          }
+        });
+      }
+
+      // 2. CGPA Distribution Doughnut
+      const cgpaCtx = document.getElementById('cgpaDistChart');
+      if (cgpaCtx) {
+        const students = <%- JSON.stringify(students) %>;
+        const above9 = students.filter(s => s.cgpa >= 9.0).length;
+        const eightToNine = students.filter(s => s.cgpa >= 8.0 && s.cgpa < 9.0).length;
+        const sevenToEight = students.filter(s => s.cgpa >= 7.0 && s.cgpa < 8.0).length;
+        const belowSeven = students.filter(s => s.cgpa < 7.0).length;
+
+        new Chart(cgpaCtx, {
+          type: 'pie',
+          data: {
+            labels: ['CGPA >= 9.0 (Distinction)', '8.0 - 8.9 (First Class Dist.)', '7.0 - 7.9 (First Class)', '< 7.0 (Second / Pass)'],
+            datasets: [{
+              data: [above9, eightToNine, sevenToEight, belowSeven],
+              backgroundColor: ['#15803d', '#2563eb', '#f59e0b', '#dc2626']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

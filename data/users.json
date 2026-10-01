@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "name": "Drushti Hegde",
+    "email": "student@college.com",
+    "password": "123456",
+    "role": "student",
+    "rollNo": "DS2026-042",
+    "course": "B.E. Computer Science (Data Science)",
+    "year": "2nd Year",
+    "semester": "IV Semester",
+    "avatar": "DH"
+  },
+  {
+    "id": 2,
+    "name": "Prof. Ananya Kulkarni",
+    "email": "teacher@college.com",
+    "password": "teacher123",
+    "role": "teacher",
+    "department": "Computer Engineering",
+    "designation": "Assistant Professor",
+    "avatar": "AK"
+  }
+]

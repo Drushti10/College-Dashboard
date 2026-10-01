@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Notice Publisher | Faculty</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("../partials/teacher-nav", { active: "notices" }) %>
+
+  <main class="main">
+    <%- include("../partials/teacher-header") %>
+
+    <section class="content">
+      <div class="page-header">
+        <div class="page-title">
+          <p class="eyebrow">INSTITUTIONAL BROADCASTS</p>
+          <h1>Smart Notice Creator & Bulletin Administration</h1>
+          <p class="subtitle">Draft, preview in real-time, and publish prioritized academic and campus announcements</p>
+        </div>
+      </div>
+
+      <% if (message) { %>
+        <div class="success-banner">
+          <span>✓</span> <%= message %>
+        </div>
+      <% } %>
+
+      <!-- Live Preview & Notice Creation Grid -->
+      <div class="dashboard-columns two-col-50-50" style="margin-bottom: 24px;">
+        <!-- Publisher Form -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">DRAFTING TOOL</p>
+              <h2>Create New Announcement</h2>
+              <p>Fill parameters to broadcast notice to enrolled students</p>
+            </div>
+            <span class="badge primary">Interactive Preview</span>
+          </div>
+
+          <form method="POST" action="/teacher/notices" class="crud-form">
+            <label>Notice Headline / Title</label>
+            <input name="title" id="noticeTitleInput" placeholder="e.g. Mid-Semester Examination Schedule Announced" required oninput="updateNoticePreview()">
+
+            <div class="form-two">
+              <div>
+                <label>Category</label>
+                <select name="type" id="noticeTypeInput" onchange="updateNoticePreview()">
+                  <option value="Academic" selected>Academic</option>
+                  <option value="Event">Event & Workshop</option>
+                  <option value="Examination">Examination</option>
+                  <option value="Placement">Training & Placement</option>
+                  <option value="Library">Library</option>
+                  <option value="General">General</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Priority Level</label>
+                <select name="priority" id="noticePriorityInput" onchange="updateNoticePreview()">
+                  <option value="Normal" selected>Normal</option>
+                  <option value="Important">Important</option>
+                  <option value="Urgent">Urgent (High Priority)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-two">
+              <div>
+                <label>Publication Date</label>
+                <input type="date" name="date" id="noticeDateInput" value="2026-09-09" required oninput="updateNoticePreview()">
+              </div>
+              <div>
+                <label>Author / Originating Office</label>
+                <input name="author" value="<%= user.name %> (<%= user.designation || 'Faculty' %>)" required>
+              </div>
+            </div>
+
+            <div>
+              <label>Announcement Body / Message</label>
+              <textarea name="message" id="noticeMessageInput" placeholder="Detailed bulletin content for students..." required oninput="updateNoticePreview()"></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px;">
+              <button class="primary-btn" type="submit" style="padding: 10px 20px;">📢 Broadcast Notice</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Real-Time Student Live Preview Card -->
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">REAL-TIME PREVIEW</p>
+              <h2>Student Feed Preview</h2>
+              <p>Visual representation exactly as it will display on student dashboards</p>
+            </div>
+            <span class="badge" id="prevNoticePriority">Normal</span>
+          </div>
+
+          <div style="padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-md); background-color: var(--surface-alt);">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+              <span class="badge primary" id="prevNoticeType">Academic</span>
+              <small id="prevNoticeDate" style="color: var(--text-muted); font-size: 11px;">Date: 2026-09-09</small>
+            </div>
+
+            <h3 id="prevNoticeTitle" style="font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 8px;">
+              Notice Title Preview
+            </h3>
+
+            <p id="prevNoticeMessage" style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+              Detailed announcement message will appear here as you type...
+            </p>
+
+            <div style="margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 8px; font-size: 10px; color: var(--text-subtle);">
+              Originator: <b><%= user.name %></b> • Department of Computer Engineering
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Published Notices Directory Table -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">ACTIVE BROADCASTS</p>
+            <h2>Published Notices Directory</h2>
+            <p><%= notices.length %> bulletins currently active in student portals</p>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="table-filter-bar">
+            <div class="table-search">
+              <span>🔍</span>
+              <input type="text" id="noticeSearch" placeholder="Filter notices..." onkeyup="filterTable('noticeSearch', 'noticeTable')">
+            </div>
+            <span style="font-size: 11px; color: var(--text-muted);"><%= notices.length %> Active Notices</span>
+          </div>
+
+          <table id="noticeTable">
+            <thead>
+              <tr>
+                <th>Notice Headline</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Date</th>
+                <th>Author</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% notices.forEach(n => { %>
+                <tr>
+                  <td>
+                    <strong><%= n.title %></strong>
+                    <small><%= n.message.substring(0, 80) %>...</small>
+                  </td>
+                  <td><span class="badge primary"><%= n.type %></span></td>
+                  <td>
+                    <span class="badge <%= n.priority === 'Urgent' ? 'urgent' : n.priority === 'Important' ? 'important' : 'normal' %>">
+                      <%= n.priority || 'Normal' %>
+                    </span>
+                  </td>
+                  <td><%= n.date %></td>
+                  <td><small><%= n.author || 'Academic Office' %></small></td>
+                  <td>
+                    <div class="action-row">
+                      <button class="small-btn" onclick="openTeacherEdit('edit-notice-<%= n.id %>')">Edit</button>
+                      <form method="POST" action="/teacher/notices/<%= n.id %>/delete" onsubmit="return confirm('Permanently remove this announcement?');" style="display: inline;">
+                        <button type="submit" class="danger-btn">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Edit Notice Modals -->
+  <% notices.forEach(n => { %>
+    <div class="modal" id="edit-notice-<%= n.id %>">
+      <div class="modal-backdrop" onclick="closeTeacherEdit('edit-notice-<%= n.id %>')"></div>
+      <div class="modal-card">
+        <div class="modal-card-head">
+          <div>
+            <p class="eyebrow" style="font-size: 10px; font-weight: 700; color: var(--primary);">UPDATE BULLETIN</p>
+            <h2>Edit Notice</h2>
+          </div>
+          <button class="modal-close" onclick="closeTeacherEdit('edit-notice-<%= n.id %>')">×</button>
+        </div>
+
+        <form method="POST" action="/teacher/notices/<%= n.id %>/update" class="crud-form">
+          <label>Title</label>
+          <input name="title" value="<%= n.title %>" required>
+
+          <div class="form-two">
+            <div>
+              <label>Type</label>
+              <select name="type">
+                <option value="Academic" <%= n.type === 'Academic' ? 'selected' : '' %>>Academic</option>
+                <option value="Event" <%= n.type === 'Event' ? 'selected' : '' %>>Event</option>
+                <option value="Examination" <%= n.type === 'Examination' ? 'selected' : '' %>>Examination</option>
+                <option value="Placement" <%= n.type === 'Placement' ? 'selected' : '' %>>Placement</option>
+                <option value="Library" <%= n.type === 'Library' ? 'selected' : '' %>>Library</option>
+                <option value="General" <%= n.type === 'General' ? 'selected' : '' %>>General</option>
+              </select>
+            </div>
+            <div>
+              <label>Priority</label>
+              <select name="priority">
+                <option value="Normal" <%= n.priority === 'Normal' ? 'selected' : '' %>>Normal</option>
+                <option value="Important" <%= n.priority === 'Important' ? 'selected' : '' %>>Important</option>
+                <option value="Urgent" <%= n.priority === 'Urgent' ? 'selected' : '' %>>Urgent</option>
+              </select>
+            </div>
+          </div>
+
+          <label>Date</label>
+          <input name="date" type="date" value="<%= n.date %>" required>
+
+          <label>Message</label>
+          <textarea name="message" required><%= n.message %></textarea>
+
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+            <button type="button" class="secondary-btn" onclick="closeTeacherEdit('edit-notice-<%= n.id %>')">Cancel</button>
+            <button class="primary-btn" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>
